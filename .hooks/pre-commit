@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Only update requirements if venv exists and is activated
+if [ -d "./env" ]; then
+    # Activate the environment
+    . env/bin/activate
+    # Freeze current packages to requirements.txt
+    pip freeze > requirements.txt
+    # Add updated file to commit
+    git add requirements.txt
+fi
