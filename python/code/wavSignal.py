@@ -21,6 +21,16 @@ class WavSignal:
         self._N = len(self._signal)
         self._t = np.arange(self._N) / self._fs
 
+    # Setters
+    def set_name(self, name: str):
+        self._name = name
+
+    def set_signal(self, newSignal):
+        """
+        So you can modify the signal and give it back.
+        """
+        self._signal = newSignal
+
     # Getters
     def get_sampling_rate(self):
         return self._fs
@@ -78,3 +88,4 @@ class WavSignal:
             plt.show()
         if save:
             save_plot(self.get_name())
+        plt.close()

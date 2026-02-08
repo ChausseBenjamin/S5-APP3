@@ -20,3 +20,6 @@ def save_plot(name: str):
     """
     DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
     plt.savefig(DIRECTORY_PATH / f"{name}.pdf", bbox_inches="tight")
+    plt.tight_layout()
+    plt.rcParams["figure.figsize"] = (16, 9)
+    plt.savefig(DIRECTORY_PATH / f"{name}.pdf", pad_inches=0.1)
