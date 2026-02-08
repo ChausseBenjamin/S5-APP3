@@ -11,16 +11,22 @@ class SignalFFT:
     It does everything for you, including plotting.
     """
 
-    def __init__(self, signal: WavSignal):
+    def __init__(self, signal: WavSignal, amountOfSin: int = 32):
         self._ogSignal = signal
+        self._sinKept = amountOfSin
 
-        self._fft = numpy.fft.fft(signal.get_signal())
-        self._frequencies = numpy.fft.fftfreq(
+        fft = numpy.fft.fft(signal.get_signal())
+
+        frequencies = numpy.fft.fftfreq(
             signal.get_sample_count(), d=(1 / signal.get_sampling_rate())
         )
+        amplitudes = numpy.abs(fft)
+        phases = numpy.angle(fft)
 
-        self._amplitudes = numpy.abs(self._fft)
-        self._phases = numpy.angle(self._fft)
+        # TODO: How the fuck do I only keep the 32 most important harmonics without fucking up the graphs?!
+        self._frequencies = frequencies
+        self._amplitudes = amplitudes
+        self._phases = phases
 
     # Getters
     def get_amplitudes(self):
@@ -52,6 +58,14 @@ class SignalFFT:
         Get the signal you originally gave to this object, to access its metadata
         """
         return self._ogSignal
+
+    def print_info(self):
+        """
+        Debugging
+        """
+        print(f"FFT of {self.get_signal().get_name()}")
+        print(f"\t - Amount of sins kept:    {self._sinKept}")
+        print(f"\t - Size of frequency axis: {len(self.get_frequencies_axis())}")
 
     def partial_phase_plot(self):
         """

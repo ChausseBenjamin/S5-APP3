@@ -6,8 +6,10 @@ def main():
     plot_raw_signals()
 
     guitar = get_guitar()
-    guitar_fft = SignalFFT(guitar)
+    guitar_fft = SignalFFT(guitar, amountOfSin=32)
     guitar_fft.full_plot(show=False, save=True)
+
+    guitar_fft.print_info()
 
 
 if __name__ == "__main__":
