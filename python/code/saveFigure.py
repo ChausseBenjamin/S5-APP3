@@ -16,4 +16,5 @@ def save_plot(name: str):
     """
     DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
     plt.tight_layout()
+    plt.rcParams["figure.figsize"] = (16, 9)
     plt.savefig(DIRECTORY_PATH / f"{name}.svg", pad_inches=0.1)
