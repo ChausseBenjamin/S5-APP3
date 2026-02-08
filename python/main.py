@@ -1,8 +1,13 @@
-from code.rawSignals import plot_raw_signals
+from code.rawSignals import get_guitar, plot_raw_signals
+from code.signalFFT import SignalFFT
 
 
 def main():
     plot_raw_signals()
+
+    guitar = get_guitar()
+    guitar_fft = SignalFFT(guitar)
+    guitar_fft.full_plot(show=False, save=True)
 
 
 if __name__ == "__main__":

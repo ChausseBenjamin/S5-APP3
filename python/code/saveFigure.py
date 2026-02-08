@@ -15,4 +15,5 @@ def save_plot(name: str):
     :type name: str
     """
     DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
-    plt.savefig(DIRECTORY_PATH / f"{name}.svg", bbox_inches="tight")
+    plt.tight_layout()
+    plt.savefig(DIRECTORY_PATH / f"{name}.svg", pad_inches=0.1)

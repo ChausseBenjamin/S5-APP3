@@ -78,3 +78,4 @@ class WavSignal:
             plt.show()
         if save:
             save_plot(self.get_name())
+        plt.close()
