@@ -1,10 +1,8 @@
-from code.wavSignal import WavSignal
+from code.rawSignals import plot_raw_signals
 
 
 def main():
-    guitar = WavSignal("audio/note_guitare_lad.wav")
-    guitar.print_info()
-    guitar.plot(show=False, save=True)
+    plot_raw_signals()
 
 
 if __name__ == "__main__":

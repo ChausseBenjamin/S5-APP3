@@ -1,3 +1,4 @@
+from code.saveFigure import save_plot
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -46,25 +47,34 @@ class WavSignal:
         print(f"\t- Signal:      {self.get_signal()}")
         print(f"\t- Time:        {self.get_time_axis()}")
 
-    def plot(self, show: bool, save: bool):
+    def partial_plot(self):
         """
-        Plot the signal using matplotlib.
+        Integrates this signal within a larger plot.
+        You handle the business, but this essentially
+        does the plt for you so you dont have to mess
+        with the getters.
+
+        Does not apply a title.
+        """
+        plt.plot(self.get_time_axis(), self.get_signal(), label=self.get_name())
+        plt.xlabel("Temps (s)")
+        plt.ylabel("Amplitude")
+        plt.legend()
+        plt.grid(True)
+
+    def full_plot(self, show: bool, save: bool):
+        """
+        Plot the raw signal using matplotlib.
         Titles and axis automatically done.
         Hardcoded image output path.
         """
         plt.figure()
 
         # --- signal_guitar temporel ---
-        plt.plot(self.get_time_axis(), self.get_signal(), label=self.get_name())
+        self.partial_plot()
         plt.title(f"Raw {self.get_name()}")
-        plt.xlabel("Temps (s)")
-        plt.ylabel("Amplitude")
-        plt.legend()
-        plt.grid(True)
 
         if show:
             plt.show()
         if save:
-            outputPath = Path("./graphs")
-            outputPath.mkdir(parents=True, exist_ok=True)
-            plt.savefig(f"./graphs/{self.get_name()}.svg")
+            save_plot(self.get_name())
