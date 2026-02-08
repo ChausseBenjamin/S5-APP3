@@ -1,3 +1,6 @@
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
 
@@ -12,6 +15,7 @@ class WavSignal:
 
     def __init__(self, path):
         self._path = path
+        self._name = Path(self._path).stem
         self._fs, self._signal = wavfile.read(path)
         self._N = len(self._signal)
         self._t = np.arange(self._N) / self._fs
@@ -26,8 +30,41 @@ class WavSignal:
     def get_time_axis(self):
         return self._t
 
-    def get_num_samples(self):
+    def get_sample_count(self):
         return self._N
 
     def get_path(self):
         return self._path
+
+    def get_name(self):
+        return self._name
+
+    def print_info(self):
+        print(f"{self.get_name()}:")
+        print(f"\t- Sample rate: {self.get_sampling_rate()}")
+        print(f"\t- N:           {self.get_sample_count()}")
+        print(f"\t- Signal:      {self.get_signal()}")
+        print(f"\t- Time:        {self.get_time_axis()}")
+
+    def plot(self, show: bool, save: bool):
+        """
+        Plot the signal using matplotlib.
+        Titles and axis automatically done.
+        Hardcoded image output path.
+        """
+        plt.figure()
+
+        # --- signal_guitar temporel ---
+        plt.plot(self.get_time_axis(), self.get_signal(), label=self.get_name())
+        plt.title(f"Raw {self.get_name()}")
+        plt.xlabel("Temps (s)")
+        plt.ylabel("Amplitude")
+        plt.legend()
+        plt.grid(True)
+
+        if show:
+            plt.show()
+        if save:
+            outputPath = Path("./graphs")
+            outputPath.mkdir(parents=True, exist_ok=True)
+            plt.savefig(f"./graphs/{self.get_name()}.svg")
