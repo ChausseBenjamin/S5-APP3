@@ -1,6 +1,8 @@
 from code.rawSignals import get_guitar, plot_raw_signals
 from code.signalFFT import SignalFFT
 
+import numpy
+
 
 def main():
     plot_raw_signals()
@@ -9,7 +11,19 @@ def main():
     guitar_fft = SignalFFT(guitar, amountOfSin=32)
     guitar_fft.full_plot(show=False, save=True)
 
-    guitar_fft.print_info()
+    # Applying an Hanning window
+    windowedGuitar = (
+        guitar.get_signal()
+        * numpy.hanning(len(guitar.get_signal()))
+        / guitar.get_sample_count()
+    )
+
+    # Idk fam, this whole shit seems completely hella wrong as fuck.
+    guitar.set_signal(windowedGuitar)
+    guitar.set_name("windowed_guitar")
+    guitar.full_plot(show=False, save=True)
+    windowed_guitar_fft = SignalFFT(guitar)
+    windowed_guitar_fft.full_plot(show=False, save=True)
 
 
 if __name__ == "__main__":
