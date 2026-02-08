@@ -24,6 +24,6 @@
     "UV_INIT_BARE": "false",
     "INSTALL_IPYKERNEL": "false"
   },
-  "postCreateCommand": "make post-create",
+  "postCreateCommand": "cd python && make post-create",
   "mounts": []
 }

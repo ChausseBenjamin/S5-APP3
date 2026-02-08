@@ -35,7 +35,7 @@ ensure-ipykernel:
 # Verify installed tools
 test-tools:
 	@echo "Running tool verification..."
-	@bash .devcontainer/test_tools.sh > /tmp/test-tools.log 2>&1
+	@bash ../.devcontainer/test_tools.sh > /tmp/test-tools.log 2>&1
 	@echo "✓ Tool verification complete (log: /tmp/test-tools.log)"
 
 # Sync dependencies with uv
