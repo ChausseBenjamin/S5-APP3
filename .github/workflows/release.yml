@@ -1,7 +1,7 @@
 name: Build and Release LaTeX Document
 on:
   push:
-    branches: [master, main]
+    branches: [rapport]
   workflow_dispatch: # Allow manual triggers
 env:
   LATEX_DIR: rapport

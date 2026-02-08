@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Only run if the venv doesn't exist
+if [ ! -d "./env" ]; then
+    python -m venv env
+    echo "Virtual environment created at ./env"
+    echo "Run 'source env/bin/activate' and 'pip install -r requirements.txt' to set up dependencies."
+fi
