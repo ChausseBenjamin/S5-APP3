@@ -1,17 +1,18 @@
 from code.rawSignals import get_guitar, plot_raw_signals
-from code.sandbox import sandbox
+
+# from code.sandbox import sandbox
+from code.signalAnalysis import get_harmonics
 from code.signalFFT import SignalFFT
 from code.signalModifications import apply_absolute
-
+from datetime import datetime
 
 import numpy as np
-from datetime import datetime
 
 
 def main():
     print(datetime.now())
     plot_raw_signals()
-    sandbox()
+    # sandbox()
 
     guitar = get_guitar()
     print("-------------- Guitar before absolute")
@@ -20,6 +21,9 @@ def main():
     print("-------------- Guitar after absolute")
     apply_absolute(guitar)
     guitar.print_info()
+
+    print("-------------- Harmonic analysis of Guitar")
+    get_harmonics(guitar)
 
     guitar_fft = SignalFFT(guitar, amountOfSin=32)
     guitar_fft.full_plot(show=False, save=True)
