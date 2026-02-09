@@ -81,3 +81,7 @@ freeze:
 	@echo "# Generated on $$(date)" > /tmp/requirements.txt
 	@uv pip freeze >> /tmp/requirements.txt
 	@echo "✓ Dependencies frozen (log: /tmp/requirements.txt)"
+
+clear-images:
+	@echo "Clearing generated graphs"
+	@rm -rf graphs/*

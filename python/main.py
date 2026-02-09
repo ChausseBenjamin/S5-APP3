@@ -1,6 +1,6 @@
 from code.rawSignals import get_guitar, plot_raw_signals
 from code.signalFFT import SignalFFT
-from code.signalModifications import applyAbsolute
+from code.signalModifications import apply_absolute
 
 import numpy
 
@@ -9,7 +9,13 @@ def main():
     plot_raw_signals()
 
     guitar = get_guitar()
-    applyAbsolute(guitar)
+    print("-------------- Guitar before absolute")
+    guitar.print_info()
+
+    print("-------------- Guitar after absolute")
+    apply_absolute(guitar)
+    guitar.print_info()
+
     guitar_fft = SignalFFT(guitar, amountOfSin=32)
     guitar_fft.full_plot(show=False, save=True)
 

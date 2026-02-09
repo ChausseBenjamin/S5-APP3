@@ -30,10 +30,18 @@ class WavSignal:
         So you can modify the signal and give it back.
         """
         self._signal = newSignal
+        self._N = len(self._signal)
+        self._t = np.arange(self._N) / self._fs
 
     # Getters
     def get_sampling_rate(self):
         return self._fs
+
+    def get_duration(self):
+        """
+        Returned in seconds, from the sampling rate and total amount of samples
+        """
+        return self.get_sample_count() / self.get_sampling_rate()
 
     def get_signal(self):
         return self._signal
@@ -54,6 +62,7 @@ class WavSignal:
         print(f"{self.get_name()}:")
         print(f"\t- Sample rate: {self.get_sampling_rate()}")
         print(f"\t- N:           {self.get_sample_count()}")
+        print(f"\t- Duration:    {self.get_duration()}")
         print(f"\t- Signal:      {self.get_signal()}")
         print(f"\t- Time:        {self.get_time_axis()}")
 
