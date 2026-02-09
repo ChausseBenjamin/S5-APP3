@@ -7,6 +7,7 @@ from scipy.signal import resample
 
 NOTES = {
     "SILENCE": 0,
+    "Bb3": 233.08,
     "C": 261.63,
     "C#": 277.18,
     "D": 293.66,
@@ -49,7 +50,7 @@ AMONG_US = [
     {"note": "F", "duration": EIGHT},
     {"note": "Eb", "duration": EIGHT},
     {"note": "C", "duration": DOT_QUARTER},
-    {"note": "Bb", "duration": SIXTEEN},
+    {"note": "Bb3", "duration": SIXTEEN},
     {"note": "D", "duration": SIXTEEN},
     {"note": "C", "duration": HALF},
     {"note": "C", "duration": EIGHT},
