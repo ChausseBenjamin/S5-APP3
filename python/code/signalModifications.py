@@ -42,3 +42,31 @@ def trim_samples(signal: WavSignal, trim_start=0, trim_end=0):
     end = int(end * signal.get_sampling_rate())
 
     signal.set_signal(signal.get_signal()[start:end])
+
+
+def apply_sliding_average_low_pass_filter(
+    signal: WavSignal, coefficient_order: int, new_signal_name: str
+):
+    """
+    Apply the impulse response of a filter to
+    a signal.
+    """
+    # Need an array of impulse responses
+    impulse_response = numpy.ones(int(coefficient_order)) * (1 / coefficient_order)
+    filtered = numpy.convolve(impulse_response, signal.get_signal())
+    signal.set_signal(filtered)
+    signal.set_name(new_signal_name)
+
+
+def apply_gain(signal: WavSignal, gain: float):
+    """
+    Apply an uniform gain on an entire signal.
+
+    :param signal: Signal to modify and amplify / reduce in gains
+    :type signal: WavSignal
+    :param gain: is a factor, not decibels
+    :type gain: float
+    """
+    print(f"Applying x{gain} gain to signal: {signal.get_name()}")
+    gained_signal = signal.get_signal() * gain
+    signal.set_signal(gained_signal)

@@ -14,12 +14,17 @@ class WavSignal:
     and perform other tasks to the signal.
     """
 
-    def __init__(self, path):
+    def __init__(self, path: str):
         self._path = path
         self._name = Path(self._path).stem
         self._fs, self._signal = wavfile.read(path)
         self._N = len(self._signal)
         self._t = np.arange(self._N) / self._fs
+
+    def save(self):
+        wavfile.write(
+            f"audio/{self.get_name()}.wav", self.get_sampling_rate(), self.get_signal()
+        )
 
     # Setters
     def set_name(self, name: str):
@@ -30,6 +35,7 @@ class WavSignal:
         So you can modify the signal and give it back.
         """
         self._signal = newSignal
+        print()
         self._N = len(self._signal)
         self._t = np.arange(self._N) / self._fs
 

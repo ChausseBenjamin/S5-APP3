@@ -11,13 +11,12 @@ class SignalFFT:
     It does everything for you, including plotting.
     """
 
-    def __init__(self, signal: WavSignal, amountOfSin: int = 32):
+    def __init__(self, signal: WavSignal):
         self._ogSignal = signal
-        self._sinKept = amountOfSin
 
-        fft = numpy.fft.fft(signal.get_signal())
+        fft = numpy.fft.rfft(signal.get_signal())
 
-        frequencies = numpy.fft.fftfreq(
+        frequencies = numpy.fft.rfftfreq(
             signal.get_sample_count(), d=(1 / signal.get_sampling_rate())
         )
         amplitudes = numpy.abs(fft)

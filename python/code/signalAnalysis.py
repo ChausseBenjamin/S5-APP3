@@ -12,7 +12,6 @@ def get_harmonics(
     amount_to_get: int = 32,
     sample_distance_between_peaks: int = 1285,
 ):
-
     start = 1
     end = amount_to_get + 1
 
@@ -20,9 +19,7 @@ def get_harmonics(
     fft = SignalFFT(signal)
     amplitudes = fft.get_amplitudes()
 
-    local_peaks, _ = sp.find_peaks(
-        amplitudes, distance=sample_distance_between_peaks, prominence=1
-    )
+    local_peaks, _ = sp.find_peaks(amplitudes, distance=sample_distance_between_peaks)
 
     peaks_indexes = local_peaks[start:end]
     peaks = amplitudes[peaks_indexes]
@@ -45,4 +42,4 @@ def get_harmonics(
     print(f"\t- Frequency indexes:   {peaks_indexes}")
     print(f"\t- Harmonic amplitudes: {peaks}")
 
-    return peaks_indexes, peaks  # returns position X of peaks, and value Y of peaks
+    return peaks_indexes, peaks
