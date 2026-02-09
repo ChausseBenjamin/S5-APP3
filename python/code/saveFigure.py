@@ -1,9 +1,9 @@
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 
-mpl.rcParams["font.family"] = "CMU Serif"
+# mpl.rcParams["font.family"] = "CMU Serif"
 mpl.rcParams["mathtext.fontset"] = "cm"
 
 DIRECTORY_PATH = Path("./graphs")
@@ -19,7 +19,7 @@ def save_plot(name: str):
     :type name: str
     """
     DIRECTORY_PATH.mkdir(parents=True, exist_ok=True)
-    plt.savefig(DIRECTORY_PATH / f"{name}.pdf", bbox_inches="tight")
+    plt.savefig(DIRECTORY_PATH / f"{name}.svg", bbox_inches="tight")
     plt.tight_layout()
     plt.rcParams["figure.figsize"] = (16, 9)
     plt.savefig(DIRECTORY_PATH / f"{name}.pdf", pad_inches=0.1)
