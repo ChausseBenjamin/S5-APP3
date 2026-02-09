@@ -27,6 +27,7 @@ class SignalFFT:
         self._frequencies = frequencies
         self._amplitudes = amplitudes
         self._phases = phases
+        self._fft = fft
 
     # Getters
     def get_amplitudes(self):
