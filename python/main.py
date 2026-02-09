@@ -1,6 +1,7 @@
 from code.rawSignals import get_guitar, plot_raw_signals
 from code.sandbox import sandbox
 from code.signalFFT import SignalFFT
+from code.signalModifications import applyAbsolute
 
 
 import numpy as np
@@ -13,6 +14,7 @@ def main():
     sandbox()
 
     guitar = get_guitar()
+    applyAbsolute(guitar)
     guitar_fft = SignalFFT(guitar, amountOfSin=32)
     guitar_fft.full_plot(show=False, save=True)
 

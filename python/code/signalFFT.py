@@ -99,7 +99,7 @@ class SignalFFT:
         plt.legend()
         plt.grid(True)
 
-    def full_plot(self, show: bool, save: bool):
+    def full_plot(self, show: bool = True, save: bool = True):
         """
         Plot the full signal's FFGet signalT.
         """
