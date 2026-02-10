@@ -20,6 +20,7 @@ from code.signalModifications import (
 from code.wavSignal import WavSignal
 
 import matplotlib.pyplot as plt
+import numpy
 
 
 def execute_guitar():
@@ -61,7 +62,7 @@ def get_synthesized_guitar(harmonics_index, harmonics_peaks, enveloppe):
         harmonics_index, harmonics_peaks, enveloppe, get_guitar()
     )
     plot_synthesized_versus_original(synthesized, enveloppe)
-
+    plot_fft_synthesized_versus_original(synthesized)
     print("saving synthesized signal audio")
     synthesized.save()
     return synthesized
@@ -135,4 +136,37 @@ def plot_synthesized_versus_original(synthesized: WavSignal, enveloppe: WavSigna
     synthesized.partial_plot()
     enveloppe.partial_plot()
     save_plot("original guitar versus synthesized")
+    plt.close()
+
+
+def plot_fft_synthesized_versus_original(synthesized: WavSignal):
+    print("Fourier analysis of synthesized signal versus real one")
+    guitar = get_guitar()
+
+    fft_guitar = SignalFFT(guitar)
+    fft_synthesized = SignalFFT(synthesized)
+
+    plt.figure()
+    plt.title("FFT amplitude original versus synthesized")
+    plt.xlabel("index de fréquence (m)")
+    plt.ylabel("Amplitude (dB)")
+    plt.xlim(0, 70000)
+    plt.plot(20 * numpy.log10(fft_guitar.get_amplitudes()), label=guitar.get_name())
+    plt.plot(
+        20 * numpy.log10(fft_synthesized.get_amplitudes()), label=synthesized.get_name()
+    )
+    plt.grid(True)
+    plt.legend()
+    save_plot("ampltitude guitar fourier versus synthesized fourier")
+    plt.close()
+
+    plt.figure()
+    plt.subplot(2, 1, 1)
+    plt.xlim(0, 20000)
+    fft_guitar.partial_phase_plot()
+    plt.subplot(2, 1, 2)
+    plt.xlim(0, 20000)
+    fft_synthesized.partial_phase_plot()
+    plt.grid(True)
+    save_plot("phase guitar fourier versus synthesized fourier")
     plt.close()
