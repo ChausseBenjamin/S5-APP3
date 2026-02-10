@@ -1,5 +1,11 @@
 from code.filters import best_sliding_average_low_pass_coefficient
-from code.music import AMONG_US, BETHOVEN, get_music, optimized_build_synthesized_note
+from code.music import (
+    AMONG_US,
+    BETHOVEN,
+    TRICKY,
+    get_music,
+    optimized_build_synthesized_note,
+)
 from code.rawSignals import get_guitar
 from code.saveFigure import save_plot
 
@@ -92,6 +98,19 @@ def generate_guitar_music(
     )
     bethoven.set_name("bethoven")
     bethoven.save()
+
+    print("Generating tricky.wav")
+    tricky = get_music(
+        synthesized,
+        466.2,
+        harmonics_index,
+        harmonics_peaks,
+        enveloppe,
+        get_guitar(),
+        TRICKY,
+    )
+    tricky.set_name("bethoven_trust")
+    tricky.save()
 
 
 def plot_enveloppe(enveloppe: WavSignal):

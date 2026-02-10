@@ -6,7 +6,21 @@ import numpy
 
 NOTES = {
     "SILENCE": 0,
+    # 3rd octave (lower)
     "Bb3": 233.08,
+    "C3": 130.81,
+    "C#3": 138.59,
+    "D3": 146.83,
+    "Eb3": 155.56,
+    "E3": 164.81,
+    "F3": 174.61,
+    "F#3": 185.00,
+    "G3": 196.00,
+    "Ab3": 207.65,
+    "A3": 220.00,
+    "Bb3": 233.08,
+    "B3": 246.94,
+    # 4th octave (original)
     "C": 261.63,
     "C#": 277.18,
     "D": 293.66,
@@ -19,21 +33,23 @@ NOTES = {
     "A": 440.00,
     "Bb": 466.16,
     "B": 493.88,
-    "DO": 261.6,
-    "DO#": 277.2,
-    "RÉ": 293.7,
-    "RÉ#": 311.1,
-    "MI": 329.6,
-    "FA": 349.2,
-    "FA#": 370.0,
-    "SOL": 392.0,
-    "SOL#": 415.3,
-    "LA": 440.0,
-    "LA#": 446.2,
-    "SI": 493.9,
+    # other names
+    "DO": 261.63,
+    "DO#": 277.18,
+    "RÉ": 293.66,
+    "RÉ#": 311.13,
+    "MI": 329.63,
+    "FA": 349.23,
+    "FA#": 369.99,
+    "SOL": 392.00,
+    "SOL#": 415.30,
+    "LA": 440.00,
+    "LA#": 466.16,
+    "SI": 493.88,
 }
 
-BEAT = 60 / 40
+
+BEAT = 60 / 35
 WHOLE = BEAT
 HALF = WHOLE / 2
 QUARTER = WHOLE / 4
@@ -74,7 +90,10 @@ HALF = WHOLE / 2
 QUARTER = WHOLE / 4
 DOT_QUARTER = 1.5 * QUARTER
 EIGHT = WHOLE / 8
+DOT_EIGHT = 1.5 * EIGHT
 SIXTEEN = WHOLE / 16
+DOT_SIXTEEN = 1.5 * SIXTEEN
+THIRTY_TWO = WHOLE / 32
 
 BETHOVEN = [
     {"note": "SOL", "duration": QUARTER},
@@ -85,6 +104,78 @@ BETHOVEN = [
     {"note": "FA", "duration": QUARTER},
     {"note": "FA", "duration": QUARTER},
     {"note": "RÉ", "duration": WHOLE * 3},
+]
+
+BEAT = 138 / 60
+WHOLE = BEAT
+HALF = WHOLE / 2
+QUARTER = WHOLE / 4
+DOT_QUARTER = 1.5 * QUARTER
+EIGHT = WHOLE / 8
+DOT_EIGHT = 1.5 * EIGHT
+SIXTEEN = WHOLE / 16
+DOT_SIXTEEN = 1.5 * SIXTEEN
+THIRTY_TWO = WHOLE / 32
+
+TRICKY = [
+    # # PART 1
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": SIXTEEN / 1.40},
+    {"note": "Eb", "duration": SIXTEEN / 1.40},
+    {"note": "Eb", "duration": DOT_EIGHT},
+    # REPEAT Part 1
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": SIXTEEN / 1.40},
+    {"note": "Eb", "duration": SIXTEEN / 1.40},
+    {"note": "Eb", "duration": DOT_EIGHT},
+    # PART 2
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": DOT_SIXTEEN / 1.25},
+    {"note": "Eb", "duration": SIXTEEN / 1.40},
+    {"note": "Eb", "duration": SIXTEEN / 1.40},
+    {"note": "Eb", "duration": QUARTER},
+    # PART 3
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": EIGHT / 1.15},
+    {"note": "E3", "duration": DOT_EIGHT / 1.25},
+    {"note": "F3", "duration": EIGHT / 1.25},
+    {"note": "F#3", "duration": DOT_EIGHT},
+    {"note": "F#3", "duration": DOT_QUARTER},
+    # PART 4
+    {"note": "Bb3", "duration": DOT_EIGHT},
+    {"note": "Bb3", "duration": DOT_EIGHT},
+    {"note": "Bb3", "duration": DOT_EIGHT},
+    {"note": "Bb3", "duration": EIGHT},
+    {"note": "A3", "duration": EIGHT},
+    {"note": "Ab3", "duration": EIGHT},
+    {"note": "G3", "duration": EIGHT},
+    {"note": "F#3", "duration": QUARTER / 1.25},
+    # Copy of part 3 and 4
+    # PART 3
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": DOT_EIGHT},
+    {"note": "Eb3", "duration": EIGHT / 1.15},
+    {"note": "E3", "duration": DOT_EIGHT / 1.25},
+    {"note": "F3", "duration": EIGHT / 1.25},
+    {"note": "F#3", "duration": DOT_EIGHT},
+    {"note": "F#3", "duration": DOT_QUARTER},
+    # PART 4
+    {"note": "Bb3", "duration": DOT_EIGHT},
+    {"note": "Bb3", "duration": DOT_EIGHT},
+    {"note": "Bb3", "duration": DOT_EIGHT},
+    {"note": "Bb3", "duration": EIGHT},
+    {"note": "A3", "duration": EIGHT},
+    {"note": "Ab3", "duration": EIGHT},
+    {"note": "G3", "duration": EIGHT},
+    {"note": "F#3", "duration": QUARTER},
 ]
 
 
