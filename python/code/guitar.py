@@ -10,7 +10,11 @@ from code.rawSignals import get_guitar
 from code.saveFigure import save_plot
 
 # from code.sandbox import sandbox
-from code.signalAnalysis import get_harmonics, print_harmonics
+from code.signalAnalysis import (
+    get_fondamental_harmonic_frequency,
+    get_harmonics,
+    print_harmonics,
+)
 from code.signalFFT import SignalFFT
 from code.signalModifications import (
     apply_absolute,
@@ -76,10 +80,13 @@ def generate_guitar_music(
     harmonics_peaks,
     enveloppe,
 ):
+    guitar = get_guitar()
+    fundamental = get_fondamental_harmonic_frequency(guitar, harmonics_index)
+
     print("Generating Among_us.wav")
     music = get_music(
         synthesized,
-        466.2,
+        fundamental,
         harmonics_index,
         harmonics_peaks,
         enveloppe,
@@ -92,7 +99,7 @@ def generate_guitar_music(
     print("Generating bethoven.wav")
     bethoven = get_music(
         synthesized,
-        466.2,
+        fundamental,
         harmonics_index,
         harmonics_peaks,
         enveloppe,
@@ -105,7 +112,7 @@ def generate_guitar_music(
     print("Generating tricky.wav")
     tricky = get_music(
         synthesized,
-        466.2,
+        fundamental,
         harmonics_index,
         harmonics_peaks,
         enveloppe,

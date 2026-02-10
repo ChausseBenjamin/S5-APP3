@@ -69,3 +69,15 @@ def print_harmonics(original_signal: WavSignal, peaks_indexes, peaks):
             f"Frequency: {frequency:>8.2f} Hz | "
             f"Phase: {phase:>9.4f} rads"
         )
+
+
+def get_fondamental_harmonic_frequency(original_signal: WavSignal, peaks_indexes):
+    """
+    Obtain the fundamental harmonic of an analyzed signal.
+    Call get_harmonics() and pass the parameters here.
+    """
+    fft = SignalFFT(original_signal)
+
+    first_harmonic = fft.get_frequencies_axis()[peaks_indexes[0]]
+    print(f"The fundamental of {original_signal.get_name()} is {first_harmonic}Hz")
+    return first_harmonic
