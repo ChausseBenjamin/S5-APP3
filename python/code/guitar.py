@@ -1,5 +1,5 @@
 from code.filters import best_sliding_average_low_pass_coefficient
-from code.music import get_music, optimized_build_synthesized_note
+from code.music import AMONG_US, BETHOVEN, get_music, optimized_build_synthesized_note
 from code.rawSignals import get_guitar
 from code.saveFigure import save_plot
 
@@ -31,17 +31,35 @@ def execute_guitar():
 
     print("Generating the music")
     music = get_music(
-        synthesized, 466.2, harmonics_index, harmonics_peaks, enveloppe, get_guitar()
+        synthesized,
+        466.2,
+        harmonics_index,
+        harmonics_peaks,
+        enveloppe,
+        get_guitar(),
+        AMONG_US,
     )
     music.set_name("among_us")
     music.save()
+
+    bethoven = get_music(
+        synthesized,
+        466.2,
+        harmonics_index,
+        harmonics_peaks,
+        enveloppe,
+        get_guitar(),
+        BETHOVEN,
+    )
+    bethoven.set_name("bethoven")
+    bethoven.save()
 
 
 def get_guitar_harmonics():
     print("Harmonic analysis of Guitar")
     guitar = get_guitar()
     apply_absolute(guitar)
-    return get_harmonics(guitar, amount_to_get=31)
+    return get_harmonics(guitar)
 
 
 def get_guitar_enveloppe():

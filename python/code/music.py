@@ -3,7 +3,6 @@ from code.signalFFT import SignalFFT
 from code.wavSignal import WavSignal
 
 import numpy
-from scipy.signal import resample
 
 NOTES = {
     "SILENCE": 0,
@@ -34,7 +33,7 @@ NOTES = {
     "SI": 493.9,
 }
 
-BEAT = 90 / 60
+BEAT = 60 / 40
 WHOLE = BEAT
 HALF = WHOLE / 2
 QUARTER = WHOLE / 4
@@ -68,6 +67,27 @@ AMONG_US = [
     {"note": "Eb", "duration": EIGHT},
     {"note": "C", "duration": WHOLE},
 ]
+
+BEAT = 60 / 90
+WHOLE = BEAT
+HALF = WHOLE / 2
+QUARTER = WHOLE / 4
+DOT_QUARTER = 1.5 * QUARTER
+EIGHT = WHOLE / 8
+SIXTEEN = WHOLE / 16
+
+BETHOVEN = [
+    {"note": "SOL", "duration": QUARTER},
+    {"note": "SOL", "duration": QUARTER},
+    {"note": "SOL", "duration": QUARTER},
+    {"note": "MI", "duration": WHOLE * 1.5},
+    {"note": "FA", "duration": QUARTER},
+    {"note": "FA", "duration": QUARTER},
+    {"note": "FA", "duration": QUARTER},
+    {"note": "RÉ", "duration": WHOLE * 3},
+]
+
+# SOL SOL SOL MI bémol (silence) FA FA FA RE.
 
 
 def optimized_build_synthesized_note(
@@ -182,29 +202,6 @@ def build_synthesized_note(
     return new_signal
 
 
-# def shift_pitch_resample(wav_in, wav_out, original_freq, target_freq):
-def shift_pitch_resample(
-    original_frequency: float, new_frequency: float, original_note: WavSignal, duration
-):
-    """
-    Shifts pitch using resampling. Resulting duration changes naturally.
-    """
-    audio = original_note.get_signal().astype(numpy.float64)
-    sr = original_note.get_sampling_rate()
-
-    # Compute new length to match desired pitch
-    ratio = original_frequency / new_frequency
-    new_length = int(len(audio) * ratio)
-
-    # Resample once — pitch changes, duration changes naturally
-    shifted = resample(audio, new_length)
-
-    # Return a new WavSignal
-    new_note = copy.deepcopy(original_note)
-    new_note.set_signal(shifted.astype(audio.dtype))
-    return new_note
-
-
 def get_music(
     synthesized_note: WavSignal,
     original_frequency: int,
@@ -220,27 +217,22 @@ def get_music(
         name = n["note"]
         duration = n["duration"]
 
-        if name != "SILENCE":
-            freq = NOTES[name]
-            # note = shift_pitch_resample(
-            #     original_frequency, freq, synthesized_note, duration
-            # )
-            ratio = freq / original_frequency
-            note = optimized_build_synthesized_note(
-                harmonics_frequency_indexes,
-                harmonics_peaks,
-                enveloppe,
-                originalSignal,
-                ratio,
-            )
-            print(duration)
-            signal = note.get_signal()[
-                6000 : int(duration * note.get_sampling_rate()) + 6000
-            ]
-            generated.append(signal)
-        else:
-            silence_samples = int(duration * synthesized_note.get_sampling_rate())
-            generated.append(numpy.zeros(silence_samples))
+        freq = NOTES[name]
+        # note = shift_pitch_resample(
+        #     original_frequency, freq, synthesized_note, duration
+        # )
+        ratio = freq / original_frequency
+        note = optimized_build_synthesized_note(
+            harmonics_frequency_indexes,
+            harmonics_peaks,
+            enveloppe,
+            originalSignal,
+            ratio,
+        )
+        signal = note.get_signal()[
+            6000 : int(duration * note.get_sampling_rate()) + 6000
+        ]
+        generated.append(signal)
 
     # Concatenate everything ONCE (much cleaner)
     full_signal = numpy.concatenate(generated)
