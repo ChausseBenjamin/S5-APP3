@@ -1,0 +1,74 @@
+
+Cette section présente la restauration du signal corrompu du basson. L’objectif
+est d’éliminer une sinusoïde parasite à \SI{1}{\kilo\hertz} tout en préservant
+les caractéristiques essentielles du signal original. La méthode choisie
+consiste à appliquer un filtrage numérique très localisé afin de supprimer la
+composante indésirable sans altérer (ou presque) le reste des fréquence du
+signal.
+
+Pour atteindre cet objectif, un filtre RIF passe-bas est d’abord conçu par la
+méthode de la fenêtre, puis transformé en filtre coupe-bande centré sur la
+fréquence parasite. Le filtre initial est défini avec un ordre $N=6000$ et une
+bande de coupure de ±\SI{40}{\hertz}, ce qui permet de couvrir l’incertitude sur
+la fréquence exacte de la sinusoïde. Les équations suivantes résument la
+conception du filtre et sa conversion en filtre coupe-bande, qui sera ensuite
+convolué avec le signal d’origine pour restaurer le basson.
+
+\begin{equation}
+f_c = \frac{k-1}{2} \Rightarrow
+k   = 2f_c + 1
+    = 2\cdot\SI{40}{\hertz} + 1
+    = 81
+\end{equation}
+
+L'équation du passe-bas de départ devient alors:
+
+\begin{equation}
+	h_{lp}[n] = \frac{1}{N}\cdot \frac{ \sin{(n\pi k/N)} }{ \sin{(n\pi/N)} }
+	          = 6000^{-1} \frac{ \sin{(n\pi81/6000)} }{ \sin{(n\pi/6000)} }
+\end{equation}
+
+Toutefois, le but ultime est de couper toutes les fréquence à $f_c =
+\SI{1}{\kilo\hertz}$. Il faut donc trouver le décallage requis en terme de
+trames/bins requis ($\omega_0$) pour que le filtre affecte la fréquence voulue
+$f_c$:
+
+\begin{equation}
+	\omega_0 = 2\pi\frac{f_c}{f_s}
+					 = 2\pi\frac{\SI{1}{\kilo\hertz}}{\SI{44.1}{\kilo\hertz}}
+					 = \frac{2\pi}{44.1}
+					 \approx 0.1425
+\end{equation}
+
+Le passe-bas peut ensuite être transformé en coupe-bande comme suit en utilisant
+des tables de convertion précédement fournies:
+
+\begin{align}
+	h_{bs}[n] &= \delta[n]-2h_{lp}[n]\cos{(\omega_0n)} \\
+	          &= \delta[n]-2 * 6000^{-1}
+						   \frac{
+							   \sin{(n\pi\SI{81}{\hertz}/6000)} }{
+								 \sin{(n\pi/6000)}
+							 } \cos{(\omega_0n)} \\
+	          &= \delta[n]-2 * 6000^{-1}
+						   \frac{
+							   \sin{(n\pi\SI{81}{\hertz}/6000)} }{
+								 \sin{(n\pi/6000)}
+							 } \cos{(\frac{2n\pi}{44.1})}
+\end{align}
+
+Ce coupe-bande est enfin convolué avec le signal d'origine pour
+générer une version assainie du signal original.
+
+Une fois le code rédigé dans \textit{python} et ce nouveau signal crée, il
+devient évident aux membres de l'équipe que le filtre conçu n'arrive pas à
+éliminer la fréquence parasite dans sa totalité. Bien que le guide étudiant
+ait suggère de re-exécuter le filtre plusieurs pour pour en amplifier ses
+effets, quelques expériences sont faites pour tenter de minimiser la
+coruption du signal du basson. Cette expérimentation amène à la réalisation
+que bien qu'une fréquence de coupure de $\pm\SI{40}{\hertz}$ soit exigé,
+rétrécir la plage de coupure à $\pm\SI{1}{\hertz}$ et n'appliquer le filtre
+qu'une seule fois a une incidence bien moindre sur l'intégrité du signal.
+Bien que cette expérience soit de nature subjective, elle peut être expliqué
+par le fait qu'un filtre plus large laisse passer une plus grande part de
+l'énergie de la fréquence indésirable.

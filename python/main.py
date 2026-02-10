@@ -8,6 +8,18 @@ def main():
 if __name__ == "__main__":
     main()
 
+song = ["G", "G", "G", "D#", "F", "F", "F", "D"]
+
+
+def note2Hz(note, octave=3):
+    notes = {
+        "A": 440,
+    }
+    if note in notes:
+        return notes[note]
+    else:
+        return notes["A"]
+
 
 # import numpy as np
 # import matplotlib.pyplot as plt

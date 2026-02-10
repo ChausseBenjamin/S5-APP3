@@ -1,3 +1,4 @@
+-----00-main.tex-----
 \documentclass[a4paper]{article}
 \usepackage{titling}
 \usepackage{tabularx}
@@ -13,7 +14,6 @@
 \usepackage{subcaption}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{enumitem}
-\usepackage{siunitx}
 % \usepackage{times}
 \usepackage[toc,page]{appendix}
 
@@ -58,6 +58,19 @@
 \renewcommand{\footrulewidth}{0pt}
 
 
+% \begin{table}[H]
+% 	\centering
+% 	\caption{Seulement un test}
+% 	\begin{tabular}{lll}
+% 		\toprule
+% 		A & B & C \\
+% 		\midrule
+% 		D & E & F \\
+% 		G & H & I \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
 \section{Introduction}
 
 Ce rapport présente l’étude des signaux sonores pour un dispositif d’interaction
@@ -66,15 +79,14 @@ synthèse, en extrayant sinusoïdes et enveloppe temporelle pour générer des s
 modulables. La seconde partie se concentre sur le débruitage et la
 restauration de signaux corrompus via des filtres numériques.
 
-\section{Analyse et synthèse}
-\input{01-analysis.tex}
-\input{01-synthesis.tex}
+\section{Synthèse d'un instrument}
+\input{01-guitar.tex}
 
-\section{Débruitage et restauration du signal}
+\todo{Schéma bloc extraction des paramètres}
+\todo{Schéma bloc synthèse}
+
+\section{Débruitage d'un signal corrompu}
 \input{02-denoise.tex}
-
-\section{Résultats et discussion}
-\input{03-results.tex}
 
 \section{Conclusion}
 \todo{courte conclusion}
@@ -83,3 +95,19 @@ restauration de signaux corrompus via des filtres numériques.
 \input{99-annexes.tex}
 
 \end{document}
+-----01-guitar.tex-----
+-----02-denoise.tex-----
+
+Comme expliqué dans la problématique, une si
+-----04-denoise.tex-----
+
+-----99-annexes.tex-----
+\newpage
+\appendix
+
+\section{Signaux et équations de départ}
+
+\todo{
+Affichage des spectres de Fourier des signaux du LA# et du basson (originaux)
+en dB avec l’axe des fréquences en Hz
+}
