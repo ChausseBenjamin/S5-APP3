@@ -1,7 +1,9 @@
 import numpy as np
 from numpy import pi
 import sys
+import matplotlib.pyplot as plt
 from pathlib import Path
+
 
 try:
     # Try relative imports first (when imported as module)
@@ -13,26 +15,25 @@ except ImportError:
     from code import visualize as vis
 
 
-def lpf(cutoff, N):
+def lpf(cutoff, N, rate):
     """
     Generate a low-pass filter with a given
     cutoff frequency
     """
-    n = np.arange(N)
+    n = np.linspace(-(N - 1) / 2, (N - 1) / 2 + 1, N)
     h = np.empty(N, dtype=float)
-    # Isolating k in f_c = (K-1)/2
+    # Isolating k in cutoff = (k-1)/2 * (rate/N)
     # from the windowed LPF filter equation
-    k = (2 * cutoff) + 1
+    k = (2 * cutoff * N) / rate + 1
 
     # Handle n=0 case separately to avoid division by zero
     h[0] = k / N
 
     # Calculate for n > 0
-    if N > 1:
-        n_nonzero = n[1:]
-        h[1:] = (1 / N) * (np.sin(pi * n_nonzero * k / N) / np.sin(pi * n_nonzero / N))
+    n_nonzero = n[1:]
+    h[1:] = (1 / N) * (np.sin(pi * n_nonzero * k / N) / np.sin(pi * n_nonzero / N))
 
-    return h
+    return np.abs(h)
 
 
 def notch(N, cutoff, freq, rate):
@@ -48,7 +49,7 @@ def notch(N, cutoff, freq, rate):
     d = np.zeros(N, dtype=float)  # Initialize with zeros
     d[0] = 1  # Delta function at n=0
 
-    lowpass = lpf(cutoff, N)
+    lowpass = lpf(cutoff, N, rate)
     h = d - 2 * lowpass * np.cos(omega_0 * n)
 
     return h
@@ -60,11 +61,12 @@ if __name__ == "__main__":
     cutoff = 40
     rate = 44100
 
-    h = lpf(cutoff, N)
-    fig, axs, data_dict = vis.create_plot(h, subplots=["freq", "phase"])
+    h = lpf(cutoff, N, rate)
+    fig, axs, data_dict = vis.create_plot(h, subplots=["freq", "phase"], rate=44100)
     vis.save_plot(fig, "lpf_test.pdf")
 
     # Test that the conversion to a notch works
     h = notch(N, cutoff, 1000, rate)
-    fig, axs, data_dict = vis.create_plot(h, subplots=["freq", "phase"])
+    fig, axs, data_dict = vis.create_plot(h, subplots=["freq", "phase"], rate=44100)
+    plt.show()
     vis.save_plot(fig, "notch_test.pdf")

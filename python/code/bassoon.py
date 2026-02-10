@@ -26,24 +26,43 @@ def raw_plot():
     return fig
 
 
+def gen_filter(rate, N=6000, cutoff=40, target=1000):
+    return filtering.notch(N, cutoff, target, rate)
+
+
 def de_noised():
     """Remove 1kHz noise from bassoon audio using notch filter"""
     rate, samples = audio.load("bassoon")
-    N = 6000
-    cutoff = 40
-    target = 1000
-    h = filtering.notch(N, cutoff, target, rate)
-    # Use 'same' mode to keep output same size as input
-    for _ in range(2):
-        samples = convolve(samples, h, mode="same")
-    return samples
+    cleaned = samples
+    h = gen_filter(rate, cutoff=40)
+    for _ in range(1):
+        # Use 'same' mode to keep output same size as input
+        cleaned = convolve(cleaned, h, mode="same")
+    return cleaned
 
 
 if __name__ == "__main__":
     rate, samples = audio.load("bassoon")
     cleaned = de_noised()
+    audio.save(rate, cleaned, "bassoon-cleaned-thin.wav")
 
-    audio.save(rate, cleaned, "02-filtered_multi_bassoon.wav")
+    h = gen_filter(rate)
+    for typ in ["freq", "sig", "phase"]:
+        fig, axs, data_dict = vis.create_plot(
+            h,
+            [typ],
+            rate=rate,
+            titles=False,
+        )
+        vis.save_plot(fig, f"bassoon-notch-{typ}.pdf")
 
-    fig, axs, data_dict = vis.create_plot(cleaned, ["sig", "freq"])
-    vis.save_plot(fig, "02-filtered_multi_bassoon.pdf")
+    # save separate plots for each
+    for key, data in {"raw": samples, "cleaned": cleaned}.items():
+        fig, axs, data_dict = vis.create_plot(
+            data, ["freq", "sig", "phase"], rate=rate, titles=False, figsize=(6, 5)
+        )
+        vis.save_plot(fig, f"bassoon-{key}-combined.pdf")
+
+        for typ in ["sig", "freq", "phase"]:
+            fig, axs, data_dict = vis.create_plot(data, [typ], rate=rate, titles=False)
+            vis.save_plot(fig, f"bassoon-{key}-{typ}.pdf")
