@@ -35,7 +35,6 @@ class WavSignal:
         So you can modify the signal and give it back.
         """
         self._signal = newSignal
-        print()
         self._N = len(self._signal)
         self._t = np.arange(self._N) / self._fs
 
