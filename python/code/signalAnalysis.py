@@ -43,3 +43,29 @@ def get_harmonics(
     print(f"\t- Harmonic amplitudes: {peaks}")
 
     return peaks_indexes, peaks
+
+
+def print_harmonics(original_signal: WavSignal, peaks_indexes, peaks):
+    """
+    Generates the table required for the rapport, for all the harmonics
+    we chose to have.
+    """
+    print(
+        f"Data table of {len(peaks_indexes)} harmonics of {original_signal.get_name()}"
+    )
+    fft = SignalFFT(original_signal)
+
+    current_harmonic = 0
+    for index in peaks_indexes:
+        amplitude = peaks[current_harmonic]
+        amplitude = 20 * numpy.log10(amplitude)
+        frequency = fft.get_frequencies_axis()[index]
+        phase = fft.get_phases()[index]
+
+        current_harmonic += 1
+        print(
+            f"- {current_harmonic:<3} | "
+            f"Amplitude: {amplitude:>8.2f} | "
+            f"Frequency: {frequency:>8.2f} Hz | "
+            f"Phase: {phase:>9.4f} rads"
+        )

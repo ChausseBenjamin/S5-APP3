@@ -10,7 +10,7 @@ from code.rawSignals import get_guitar
 from code.saveFigure import save_plot
 
 # from code.sandbox import sandbox
-from code.signalAnalysis import get_harmonics
+from code.signalAnalysis import get_harmonics, print_harmonics
 from code.signalFFT import SignalFFT
 from code.signalModifications import (
     apply_absolute,
@@ -37,7 +37,9 @@ def get_guitar_harmonics():
     print("Harmonic analysis of Guitar")
     guitar = get_guitar()
     apply_absolute(guitar)
-    return get_harmonics(guitar, amount_to_get=31)
+    harmonics_index, harmonics_peaks = get_harmonics(guitar, amount_to_get=31)
+    print_harmonics(guitar, harmonics_index, harmonics_peaks)
+    return harmonics_index, harmonics_peaks
 
 
 def get_guitar_enveloppe():
