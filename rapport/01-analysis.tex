@@ -3,3 +3,20 @@
 \subsubsection{Méthode d'extraction}
 La première chose à faire avec le signal d'origine est d'en extraire les paramètres audio.
 En effet, pour synthétisé le signal, les paramètres du signal d'origine sont nécessaire.
+Ces paramètres sont le spectre fréquentielle (amplitude de chaque fréquence), phase de
+chaque fréquence et l'enveloppe temporelle du signal.
+
+Les amplitudes et phases sont obtenue à l'aide d'une analyze Fourier (FFT) sur le signal
+d'origine, en quelques fonctions python. L'enveloppe temporelle du signal est obtenue en
+convoluant un filtre passe-bas à moyenne mobile, de type RIF, avec l'absolue du signal 
+d'origine.
+
+Ce filtre est nécessaire car l'enveloppe temporelle représente une fonction de l'amplitude
+à travers le temps et non une oscillation. Mettre le signal en valeur absolue permet d'avoir
+une moyenne qui n'est pas 0. De plus ceci créé quasiment une enveloppe tel quel. L'oscillation 
+est proche d'une enveloppe temporelle, mais il reste des composantes à haute fréqunces.
+Le filtre passe-bas permet donc d'enlevé ces hautes fréquences et faire une moyenne sur 
+des amplitudes et donc obtenir un graphique lisse sans fréquences risiduelle.
+Le filtre à moyenne mobile est choisi car il est linéaire et causale, donc n'introduit pas de
+déformations. La fréquence de coupure est choisi à \pi/1000 dû à la variation très lente du
+signal d'origine.
