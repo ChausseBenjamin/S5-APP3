@@ -21,3 +21,14 @@ Le filtre à moyenne mobile est choisi car il est linéaire et causale, donc n'i
 déformations. La fréquence de coupure est choisi à $\pi/1000$ dû à la variation très lente du
 signal d'origine. L'ordre N du filtre est expliqué dans sa propre section.
 
+\subsubsection{Filtre RIF}
+La réponse impulsionnelle d'un filtre RIF à moyenne mobile à une fréquence normalizé est comme suit:
+$$
+H=\frac{1}{N}\sum^{N-1}_{n=0}e^{-j\pi\bar\omega}
+$$
+Il est possible d'utilisé la série géométrique pour enlever la somme, mais Python permet déjà le calcul
+tel quelle. Hors, la fréquence à utilisé est $\pi/1000$. Hors, suffi de tester tout les ordres possibles
+pour obtenir l'ordre le plus près d'un gain de -3dB pour la fréquence. Ce test à été fait en utilisant un
+ordre entre un minimum et un maximum. Si le gain est trop bas, un nouveau minimum est choisi, vise versa,
+jusqu'a ce que la différence entre l'ordre maximum et l'ordre minimum soit plus bas ou égal à 1. L'ordre
+N choisi de cette façon est $885$.
