@@ -1,9 +1,52 @@
 \newpage
 \appendix
 
-\section{Signaux et équations de départ}
+\section{Traitement de la guitare}
 
 \todo{
 Affichage des spectres de Fourier des signaux du LA# et du basson (originaux)
 en dB avec l’axe des fréquences en Hz
 }
+
+\section{Traitement du basson}
+
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-raw-sig.pdf}
+		\caption{Représentation temporelle}
+		\label{fig:bassoon-raw-sig}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-raw-freq.pdf}
+		\caption{Représentation fréquencielle}
+		\label{fig:bassoon-raw-freq}
+	\end{subfigure}
+
+	\caption{Analyse du basson d'origine non-traité}
+	\label{fig:bassoon-raw}
+\end{figure}
+
+\vfill
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-cleaned-sig.pdf}
+		\caption{Représentation temporelle}
+		\label{fig:bassoon-cleaned-sig}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-cleaned-freq.pdf}
+		\caption{Représentation fréquencielle}
+		\label{fig:bassoon-cleaned-freq}
+	\end{subfigure}
+
+	\caption{Analyse du basson assaini}
+	\label{fig:bassoon-cleaned}
+\end{figure}
