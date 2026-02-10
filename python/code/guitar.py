@@ -21,38 +21,9 @@ def execute_guitar():
     harmonics_index, harmonics_peaks = get_guitar_harmonics()
     enveloppe = get_guitar_enveloppe()
     plot_enveloppe(enveloppe)
-    synthesized = optimized_build_synthesized_note(
-        harmonics_index, harmonics_peaks, enveloppe, get_guitar()
-    )
-    plot_synthesized_versus_original(synthesized, enveloppe)
 
-    print("saving synthesized signal audio")
-    synthesized.save()
-
-    print("Generating the music")
-    music = get_music(
-        synthesized,
-        466.2,
-        harmonics_index,
-        harmonics_peaks,
-        enveloppe,
-        get_guitar(),
-        AMONG_US,
-    )
-    music.set_name("among_us")
-    music.save()
-
-    bethoven = get_music(
-        synthesized,
-        466.2,
-        harmonics_index,
-        harmonics_peaks,
-        enveloppe,
-        get_guitar(),
-        BETHOVEN,
-    )
-    bethoven.set_name("bethoven")
-    bethoven.save()
+    synthesized = get_synthesized_guitar(harmonics_index, harmonics_peaks, enveloppe)
+    generate_guitar_music(synthesized, harmonics_index, harmonics_peaks, enveloppe)
 
 
 def get_guitar_harmonics():
@@ -76,6 +47,51 @@ def get_guitar_fft():
     guitar = get_guitar()
     fft = SignalFFT(guitar)
     return fft
+
+
+def get_synthesized_guitar(harmonics_index, harmonics_peaks, enveloppe):
+    print("Synthetizing guitar...")
+    synthesized = optimized_build_synthesized_note(
+        harmonics_index, harmonics_peaks, enveloppe, get_guitar()
+    )
+    plot_synthesized_versus_original(synthesized, enveloppe)
+
+    print("saving synthesized signal audio")
+    synthesized.save()
+    return synthesized
+
+
+def generate_guitar_music(
+    synthesized,
+    harmonics_index,
+    harmonics_peaks,
+    enveloppe,
+):
+    print("Generating Among_us.wav")
+    music = get_music(
+        synthesized,
+        466.2,
+        harmonics_index,
+        harmonics_peaks,
+        enveloppe,
+        get_guitar(),
+        AMONG_US,
+    )
+    music.set_name("among_us")
+    music.save()
+
+    print("Generating bethoven.wav")
+    bethoven = get_music(
+        synthesized,
+        466.2,
+        harmonics_index,
+        harmonics_peaks,
+        enveloppe,
+        get_guitar(),
+        BETHOVEN,
+    )
+    bethoven.set_name("bethoven")
+    bethoven.save()
 
 
 def plot_enveloppe(enveloppe: WavSignal):

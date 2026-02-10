@@ -87,8 +87,6 @@ BETHOVEN = [
     {"note": "RÉ", "duration": WHOLE * 3},
 ]
 
-# SOL SOL SOL MI bémol (silence) FA FA FA RE.
-
 
 def optimized_build_synthesized_note(
     harmonics_frequency_indexes,
