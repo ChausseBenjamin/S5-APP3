@@ -36,7 +36,7 @@ def get_guitar_harmonics():
     print("Harmonic analysis of Guitar")
     guitar = get_guitar()
     apply_absolute(guitar)
-    return get_harmonics(guitar)
+    return get_harmonics(guitar, amount_to_get=31)
 
 
 def get_guitar_enveloppe():
