@@ -181,7 +181,7 @@ def plot_fft_synthesized_versus_original(synthesized: WavSignal):
 
     plt.figure()
     plt.title("FFT amplitude original versus synthesized")
-    plt.xlabel("index de fréquence (m)")
+    plt.xlabel("Fréquence (Hz)")
     plt.ylabel("Amplitude (dB)")
     plt.xlim(0, 70000)
     plt.plot(20 * numpy.log10(fft_guitar.get_amplitudes()), label=guitar.get_name())
