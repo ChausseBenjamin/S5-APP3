@@ -111,3 +111,438 @@ Comme expliqué dans la problématique, une si
 Affichage des spectres de Fourier des signaux du LA# et du basson (originaux)
 en dB avec l’axe des fréquences en Hz
 }
+-----00-main.tex-----
+\documentclass[a4paper]{article}
+\usepackage{titling}
+\usepackage{tabularx}
+\usepackage{titlepage}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{document}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{utils}
+\usepackage{multicol}
+\usepackage{subcaption}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{hyperref}
+% \usepackage{times}
+\usepackage[toc,page]{appendix}
+
+% Guide etudiant requires custom header/footer for some reason
+\usepackage{fancyhdr}
+
+\title{Rapport d'APP}
+
+\class{Traitement numérique des signaux}
+\classnb{GIF570}
+\renewcommand{\frenchtablename}{Tableau}
+
+\teacher{Philippe Gourmay}
+
+\author{
+  \addtolength{\tabcolsep}{-0.4em}
+  \begin{tabular}{rcl}
+      Benjamin Chausse & -- & CHAB1704 \\
+      Shawn Couture    & -- & COUS1912 \\
+  \end{tabular}
+}
+
+\makeatletter
+\let\title\@title
+\let\authors\@author
+\let\thedate\@date
+\makeatother
+
+\begin{document}
+\maketitle
+\contents{
+\tableofcontents
+\listoffigures
+\listoftables
+}
+\pagestyle{fancy}
+\fancyhf{} % clear default header/footer
+\fancyhead[L]{\title}
+\fancyhead[R]{\authors}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt} % optional
+\renewcommand{\footrulewidth}{0pt}
+
+
+\section{Introduction}
+
+Ce rapport présente l’étude des signaux sonores pour un dispositif d’interaction
+homme-machine chez AnthRoBotik. La première partie traite l’analyse et la
+synthèse d'une note de guitare, en extrayant les sinusoïdes et l'enveloppe
+temporelle pour générer des sons modulables. La seconde partie se concentre sur
+le débruitage et la restauration du signal audio d'un basson corrompu via des
+filtres numériques.
+
+\section{Analyse et synthèse}
+\input{01-analysis.tex}
+\input{01-synthesis.tex}
+
+\newpage
+\section{Débruitage et restauration du signal}
+\input{02-denoise.tex}
+
+\section{Résultats et discussion}
+\input{03-results.tex}
+
+\newpage
+\appendix
+\input{99-annexes-guit.tex}
+\input{99-annexes-bassoon.tex}
+
+\end{document}
+-----01-analysis.tex-----
+\subsection{Analyse du signal}
+
+\subsubsection{Méthode d'extraction}
+La première chose à faire avec le signal d'origine est d'en extraire les paramètres audio.
+En effet, pour synthétisé le signal, les paramètres du signal d'origine sont nécessaire.
+Ces paramètres sont le spectre fréquentielle (amplitude de chaque fréquence), phase de
+chaque fréquence et l'enveloppe temporelle du signal.
+
+Les amplitudes et phases sont obtenue à l'aide d'une analyze Fourier (FFT) sur le signal
+d'origine, en quelques fonctions python. L'enveloppe temporelle du signal est obtenue en
+convoluant un filtre passe-bas à moyenne mobile, de type RIF, avec l'absolue du signal 
+d'origine.
+
+Ce filtre est nécessaire car l'enveloppe temporelle représente une fonction de l'amplitude
+à travers le temps et non une oscillation. Mettre le signal en valeur absolue permet d'avoir
+une moyenne qui n'est pas 0. De plus ceci créé quasiment une enveloppe tel quel. L'oscillation 
+est proche d'une enveloppe temporelle, mais il reste des composantes à haute fréqunces.
+Le filtre passe-bas permet donc d'enlevé ces hautes fréquences et faire une moyenne sur 
+des amplitudes et donc obtenir un graphique lisse sans fréquences risiduelle.
+Le filtre à moyenne mobile est choisi car il est linéaire et causale, donc n'introduit pas de
+déformations. La fréquence de coupure est choisi à $\pi/1000$ dû à la variation très lente du
+signal d'origine. L'ordre N du filtre est expliqué dans sa propre section.
+
+\subsubsection{Filtre RIF}
+La réponse impulsionnelle d'un filtre RIF à moyenne mobile à une fréquence normalizé est comme suit:
+$$
+H=\frac{1}{N}\sum^{N-1}_{n=0}e^{-j\pi\bar\omega}
+$$
+Il est possible d'utilisé la série géométrique pour enlever la somme, mais Python permet déjà le calcul
+tel quelle. Hors, la fréquence à utilisé est $\pi/1000$. Hors, suffi de tester tout les ordres possibles
+pour obtenir l'ordre le plus près d'un gain de -3dB pour la fréquence. Ce test à été fait en utilisant un
+ordre entre un minimum et un maximum. Si le gain est trop bas, un nouveau minimum est choisi, vise versa,
+jusqu'a ce que la différence entre l'ordre maximum et l'ordre minimum soit plus bas ou égal à 1. L'ordre
+N choisi de cette façon est $885$.-----01-synthesis.tex-----
+\subsection{Synthèse des sons}
+Pour faire la synthèse d'un son, il faut ses paramètres, qui sont obtenue à la section précédente.
+Cependant, il faut aussi les harmoniques.
+
+\subsubsection{Obtenir les harmoniques}
+Les harmoniques sont visible en affichant le graphique des amplitudes des fréquences en décibel.
+Ils sont plus élevé que les autres fréquences du signal. Cependant, aller chercher directement
+les plus grands amplitudes ne fonctionne pas, il faut le faire par groupe locaux afin d'être sur
+de n'avoir que les harmoniques. Hors, python à une fonction préfaite qui permet de les obtenir et
+de mettre une distance minimum entre les maximums pour être sur d'obtenir que les harmoniques.
+En ajustant cette valeur de distance (1285) les 31 premières harmoniques ont pu être obtenue sur
+le signal de guitar. La 32e n'était pas à la bonne place, et donc à été enlevé.
+La première harmonique correspond à la fondamental du signal, qui à été utilisé lors de la synthèse.
+
+Une fonction python pour obtenir les harmoniques à partir d'un signal à été créé, et est représenté
+dans le schéma bloc.
+
+\subsubsection{Synthèse du son}
+Plusieurs méthodes sont possible. La toute première fût avec une somme de nombres imaginaires qui
+correspondait à la réponse impulsionnelle, ça fonctionnais mais c'était très lent. Le signal de
+synthèse peut être aussi créé en fesant la transformée de Fourier inverse du spectre fréquentielle
+des harmoniques pour obtenir un signal qui peut être multiplier par l'enveloppe temporelle. La
+méthode choisi est encore plus simple à comprendre programmatiquement. Un tableau de sinus est
+généré en leurs donnant le tableau de phases, fréquences et amplitudes. Ce dernier est directement
+multiplier par l'enveloppe temporelle pour avoir la bonne amplitude à travers le temps.
+Par la suite, le signal synthétisé est multiplier par un ratio afin qu'il ait la même amplitude
+maximal que le signal d'origine. Ce ration est un rapport entre l'amplitude maximal de la synthèse
+et le signal d'origine.
+
+\subsubsection{Génération des autres notes}
+La même exact méthode que la sous-section précédente est utilisé, sauf que cette fois-ci, la
+fréquence de tout les sinus est multiplier par un facteur $k$ autre que $1$. Ce facteur est
+obtenue en fesant le ratio de la fréquence fondamental du signal d'origine et la fréquence voulue,
+ce qui dicte de combien elle doit être muiltiplier afin d'obtenir la note voulue. Voici l'équation
+d'une sinus
+$$
+\text{amplitude}\cdot\sin(2\pi\cdot\text{fréquence}\cdot k+\text{phase})
+$$-----02-denoise.tex-----
+
+Cette section présente la restauration du signal corrompu du basson. L’objectif
+est d’éliminer une sinusoïde parasite à \SI{1}{\kilo\hertz} tout en préservant
+les caractéristiques essentielles du signal original. La méthode choisie
+consiste à appliquer un filtrage numérique très localisé afin de supprimer la
+composante indésirable sans altérer (ou presque) le reste des fréquences du
+signal.
+
+Pour atteindre cet objectif, un filtre RIF passe-bas est d’abord conçu par la
+méthode de la fenêtre, puis transformé en filtre coupe-bande centré sur la
+fréquence parasite. Le filtre initial est défini avec un ordre $N=6000$ et une
+bande de coupure de ±\SI{40}{\hertz}, ce qui permet de couvrir l’incertitude sur
+la fréquence exacte de la sinusoïde. Les équations suivantes résument la
+conception du filtre et sa conversion en filtre coupe-bande, qui sera ensuite
+convolué avec le signal d’origine pour restaurer le basson.
+
+\begin{equation}
+k = \frac{2 \cdot f_c \cdot N}{f_s} + 1
+  = \frac{2 \cdot \SI{40}{\hertz} \cdot 6000}{\SI{44100}{\hertz}} + 1
+  = \frac{480000}{44100} + 1
+  \approx 10.88 + 1 = 11.88
+\end{equation}
+
+L'équation du passe-bas de départ devient alors:
+
+\begin{equation}
+	h_{lp}[n] = \frac{1}{N}\cdot \frac{ \sin{(n\pi k/N)} }{ \sin{(n\pi/N)} }
+	          = 6000^{-1} \frac{ \sin{(n\pi \cdot 11.88/6000)} }{ \sin{(n\pi/6000)} }
+\end{equation}
+
+Toutefois, le but ultime est de couper toutes les fréquence à $f =
+\SI{1}{\kilo\hertz}$. Il faut donc trouver le décalage requis en terme de
+trames/bins requis ($\omega_0$) pour que le filtre affecte la fréquence voulue
+$f$:
+
+\begin{equation}
+	\omega_0 = 2\pi\frac{f}{f_s}
+					 = 2\pi\frac{\SI{1000}{\hertz}}{\SI{44100}{\hertz}}
+					 = \frac{2000\pi}{44100}
+					 \approx 0.1425
+\end{equation}
+
+Le passe-bas peut ensuite être transformé en coupe-bande (dont la réponse
+impulsionelle peut être observée à la figure \ref{fig:bassoon-notch}) comme suit en utilisant
+des tables de conversion précédemment fournies:
+
+\begin{align}
+	h_{bs}[n] &= \delta[n]-2h_{lp}[n]\cos{(\omega_0n)} \\
+	          &= \delta[n]-2 * 6000^{-1}
+						   \frac{
+							   \sin{(n\pi \cdot 11.88/6000)} }{
+								 \sin{(n\pi/6000)}
+							 } \cos{(\omega_0n)} \\
+	          &= \delta[n]-2 * 6000^{-1}
+						   \frac{
+							   \sin{(n\pi \cdot 11.88/6000)} }{
+								 \sin{(n\pi/6000)}
+							 } \cos{(\frac{2000n\pi}{44100})}
+\end{align}
+
+Ce coupe-bande est enfin convolué avec le signal d'origine pour générer une
+version assainie du signal. Le fonctionnement du filtre peut être confirmé en
+comparant la figure \ref{fig:bassoon-cleaned} à la figure \ref{fig:bassoon-raw}.
+Un mur de son constant, observable à la sous-figure \ref{fig:bassoon-raw-sig},
+disparaît dans \ref{fig:bassoon-cleaned-sig} (à l'exception de la période
+transitoire de début et de fin). De plus, les pics spectraux à
+$\pm\SI{1}{\kilo\hertz}$ (le $\pm$ dénote que la figure contient les fréquences
+négatives pour conserver la symétrie), causés par la sinusoïde parasite en
+\ref{fig:bassoon-raw-freq}, disparaissent complètement, comme le montre la
+sous-figure \ref{fig:bassoon-cleaned-freq}.
+
+La réponse impulsionnelle h[n] du filtre coupe-bande résultant peut être
+observée à la figure \ref{fig:bassoon-notch-impulse}, qui illustre la forme
+caractéristique de ce type de filtre avec un pic central entouré d'oscillations
+amorties.
+
+L'efficacité du filtre peut être vérifiée en observant sa réponse à une
+sinusoïde pure de \SI{1000}{\hertz} (figure \ref{fig:bassoon-test-with-1k}).
+Cette expérience montre que le signal sinusoïdal est effectivement supprimé
+par le filtre coupe-bande, confirmant son bon fonctionnement à la fréquence
+cible.
+
+
+Une fois le code rédigé dans \textit{Python} et ce nouveau signal créé, il
+devient évident aux membres de l'équipe que le filtre conçu n'arrive pas à
+éliminer la fréquence parasite dans sa totalité. Bien que le guide étudiant
+ait suggéré la réexécution du filtre plusieurs fois pour en amplifier ses
+effets, quelques expériences sont faites pour tenter de minimiser la
+corruption du signal du basson. Cette expérimentation mène à la réalisation
+que bien qu'une fréquence de coupure de $\pm\SI{40}{\hertz}$ soit exigée,
+rétrécir la plage de coupure à $\pm\SI{1}{\hertz}$ et n'appliquer le filtre
+qu'une seule fois a une incidence bien moindre sur l'intégrité du signal.
+Bien que cette expérience soit de nature subjective, elle peut être expliquée
+par le fait qu'un filtre plus large laisse passer une plus grande part de
+l'énergie de la fréquence indésirable. Cependant, pour respecter les exigences
+du laboratoire, les résultats présentés utilisent la spécification originale
+de $\pm\SI{40}{\hertz}$ avec un seul passage du filtre.
+-----03-results.tex-----
+\todo{courte conclusion}
+-----99-annexes-bassoon.tex-----
+\section{Traitement du basson}
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-raw-sig.pdf}
+		\caption{Représentation temporelle}
+		\label{fig:bassoon-raw-sig}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-raw-freq.pdf}
+		\caption{Représentation fréquencielle}
+		\label{fig:bassoon-raw-freq}
+	\end{subfigure}
+
+	\caption{Analyse du basson d'origine non-traité}
+	\label{fig:bassoon-raw}
+\end{figure}
+
+\vfill
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-cleaned-sig.pdf}
+		\caption{Représentation temporelle}
+		\label{fig:bassoon-cleaned-sig}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-cleaned-freq.pdf}
+		\caption{Représentation fréquencielle}
+		\label{fig:bassoon-cleaned-freq}
+	\end{subfigure}
+
+	\caption{Analyse du basson assaini}
+	\label{fig:bassoon-cleaned}
+\end{figure}
+
+\vfill
+
+\begin{figure}
+\centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-notch-freq.pdf}
+		\caption{Amplitude (dB)}
+		\label{fig:bassoon-notch-freq}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-notch-phase.pdf}
+		\caption{Phase (rad)}
+		\label{fig:bassoon-notch-phase}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-notch-sig.pdf}
+		\caption{Réponse impulsionnelle h[n]}
+		\label{fig:bassoon-notch-impulse}
+	\end{subfigure}
+
+	\caption{Réponse du filtre coupe-bande}
+	\label{fig:bassoon-notch}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\linewidth]{figures/bassoon-test-with-1k.pdf}
+	\caption{Réponse d'une sinusoïde \SI{1}{\kilo\hertz} au coupe-bande}
+	\label{fig:bassoon-test-with-1k}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\linewidth]{figures/bassoon-envelope.pdf}
+	\caption{Enveloppe temporelle du basson}
+	\label{fig:bassoon-envelope}
+\end{figure}
+
+-----99-annexes-guit.tex-----
+\section{Traitement de la guitare}
+
+\todo{
+Affichage des spectres de Fourier des signaux du LA# et du basson (originaux)
+en dB avec l’axe des fréquences en Hz
+}
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{../python/graphs/reponse_RIF.pdf}
+		\caption{Réponse au filtre RIF}
+		\label{fig:reponse-frequentielle-rif}
+	\end{subfigure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{../python/graphs/31 harmonics of abs of note_guitare_lad.pdf}
+		\caption{31 premières harmoniques de la guitar}
+		\label{fig:31-premières-harmoniques}
+	\end{subfigure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{../python/graphs/ampltitude guitar fourier versus synthesized fourier.pdf}
+		\caption{Spectre fréquentielles de la guitar d'origine versus synthétisé}
+		\label{fig:guitar-original-versus-synthétisé}
+	\end{subfigure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{../python/graphs/guitar_enveloppe.pdf}
+		\caption{Enveloppe temporelle de la guitar}
+		\label{fig:enveloppe-guitar}
+	\end{subfigure}
+\end{figure}
+
+\begin{table}[H]
+	\centering
+	\caption{Harmoniques de la note de guitare}
+	\label{tab:guitar-harmonics}
+	\footnotesize{
+	\begin{tabular}{llrr}
+		\toprule
+		Index & Amp. (dB) & Fréq. (\si{\hertz}) & Phase (rad) \\
+		\midrule
+		 1  & 154.15 &   467.18 & -2.9766 \\
+		 2  & 156.03 &   931.34 &  1.0890 \\
+		 3  & 151.76 &  1397.97 &  0.0823 \\
+		 4  & 139.74 &  1864.88 & -1.4838 \\
+		 5  & 140.01 &  2329.31 & -1.7659 \\
+		 6  & 141.38 &  2797.87 &  0.3606 \\
+		 7  & 134.74 &  3264.78 & -1.2277 \\
+		 8  & 131.15 &  3726.45 & -2.6815 \\
+		 9  & 131.23 &  4195.56 & -1.6767 \\
+		 10 & 124.00 &  4662.20 & -2.8018 \\
+		 11 & 125.75 &  5126.62 & -2.7569 \\
+		 12 & 122.94 &  5593.26 &  2.3990 \\
+		 13 & 120.42 &  6074.22 &  0.3645 \\
+		 14 & 119.37 &  6524.32 &  1.2354 \\
+		 15 & 118.91 &  7025.96 & -2.5247 \\
+		 16 & 116.18 &  7484.87 &  0.7796 \\
+		 17 & 119.23 &  7956.74 &  0.6406 \\
+		 18 & 114.13 &  8446.25 & -0.1434 \\
+		 19 & 115.24 &  8920.60 & -3.0627 \\
+		 20 & 115.00 &  9376.76 & -2.9300 \\
+		 21 & 114.72 &  9851.66 & -0.6240 \\
+		 22 & 109.52 & 10250.22 &  3.0618 \\
+		 23 & 111.49 & 10829.58 &  0.3800 \\
+		 24 & 105.56 & 11185.14 & -2.6147 \\
+		 25 & 110.48 & 11790.69 & -2.9863 \\
+		 26 & 110.63 & 12273.03 & -2.3882 \\
+		 27 & 111.14 & 12721.75 & -0.5966 \\
+		 28 & 110.56 & 13203.82 &  0.6351 \\
+		 29 & 107.24 & 13726.40 &  2.9570 \\
+		 30 & 102.87 & 14171.53 &  1.5487 \\
+		 31 & 106.57 & 14657.46 & -0.7994 \\
+		\bottomrule
+\end{tabular} }
+\end{table}

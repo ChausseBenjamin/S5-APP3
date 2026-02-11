@@ -84,7 +84,7 @@ def plot_filter_frequency_response(coefficient_count):
     )
     at3dB = ((numpy.pi / 1000) * get_guitar().get_sampling_rate()) / (2 * numpy.pi)
     plt.figure()
-    plt.title("Réponse en fréquence du filtre RIF")
+    # plt.title("Réponse en fréquence du filtre RIF")
     plt.plot(frequencies, responses, label="réponse")
     plt.grid(True)
     plt.xlim(0, 900)
@@ -180,7 +180,7 @@ def plot_fft_synthesized_versus_original(synthesized: WavSignal):
     fft_synthesized = SignalFFT(synthesized)
 
     plt.figure()
-    plt.title("FFT amplitude original versus synthesized")
+    # plt.title("FFT amplitude original versus synthesized")
     plt.xlabel("Fréquence (Hz)")
     plt.ylabel("Amplitude (dB)")
     plt.xlim(0, 70000)

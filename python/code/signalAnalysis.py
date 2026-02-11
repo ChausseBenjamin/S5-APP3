@@ -25,7 +25,7 @@ def get_harmonics(
     peaks = amplitudes[peaks_indexes]
 
     plt.figure()
-    plt.title("Harmonics identification")
+    # plt.title("Harmonics identification")
     plt.xlabel("index de fréquence (m)")
     plt.ylabel("Amplitude (dB)")
     plt.xlim(0, 70000)

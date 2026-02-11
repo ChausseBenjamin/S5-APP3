@@ -75,7 +75,7 @@ class SignalFFT:
         with the getters.
         """
         plt.plot(self.get_frequencies_axis(), self.get_phases(), label="Phases")
-        plt.title(f"Spectre de phases de {self.get_signal().get_name()}")
+        # plt.title(f"Spectre de phases de {self.get_signal().get_name()}")
         plt.xlabel("Fréquence (Hz)")
         plt.ylabel("Phase (rad)")
         plt.legend()
@@ -93,7 +93,7 @@ class SignalFFT:
             self.get_amplitudes(),
             label="Amplitudes",
         )
-        plt.title(f"Spectre fréquentielle de {self.get_signal().get_name()}")
+        # plt.title(f"Spectre fréquentielle de {self.get_signal().get_name()}")
         plt.xlabel("Fréquence (Hz)")
         plt.ylabel("Phase (rad)")
         plt.legend()

@@ -82,7 +82,7 @@ def gen_sound():
     # 1. Waveform - show the full time domain signal
     plt.subplot(3, 1, 1)
     plt.plot(t, filtered_signal, label="Sanitized Bassoon")
-    plt.title("Signal temporel - Basson sanitisé")
+    # plt.title("Signal temporel - Basson sanitisé")
     plt.xlabel("Temps (s)")
     plt.ylabel("Amplitude")
     plt.legend()
@@ -91,7 +91,7 @@ def gen_sound():
     # 2. Frequency Response (Magnitude)
     plt.subplot(3, 1, 2)
     plt.plot(positive_freqs, magnitude, label="Amplitude")
-    plt.title("Spectre d'amplitude - Basson sanitisé")
+    # plt.title("Spectre d'amplitude - Basson sanitisé")
     plt.xlabel("Fréquence (Hz)")
     plt.ylabel("Amplitude")
     plt.legend()
@@ -100,7 +100,7 @@ def gen_sound():
     # 3. Phase Response
     plt.subplot(3, 1, 3)
     plt.plot(positive_freqs, phase, label="Phases")
-    plt.title("Spectre de phase - Basson sanitisé")
+    # plt.title("Spectre de phase - Basson sanitisé")
     plt.xlabel("Fréquence (Hz)")
     plt.ylabel("Phase (rad)")
     plt.legend()
@@ -262,7 +262,7 @@ def plot_reverb_analysis():
     time_ms = t * 1000
     plot_samples = int(0.5 * fs)  # First 500ms
     plt.plot(time_ms[:plot_samples], final_impulse[:plot_samples])
-    plt.title("Reverb Impulse Response (First 500ms)")
+    # plt.title("Reverb Impulse Response (First 500ms)")
     plt.xlabel("Time (ms)")
     plt.ylabel("Amplitude")
     plt.grid(True, alpha=0.3)
@@ -272,7 +272,7 @@ def plot_reverb_analysis():
     plt.semilogx(
         positive_freqs[1:], 20 * np.log10(magnitude[1:] + 1e-12)
     )  # Skip DC, add small value to avoid log(0)
-    plt.title("Frequency Response (Magnitude)")
+    # plt.title("Frequency Response (Magnitude)")
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Magnitude (dB)")
     plt.grid(True, alpha=0.3)
@@ -283,7 +283,7 @@ def plot_reverb_analysis():
     plt.semilogx(
         positive_freqs[1:], np.unwrap(phase[1:]) * 180 / np.pi
     )  # Convert to degrees
-    plt.title("Phase Response")
+    # plt.title("Phase Response")
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Phase (degrees)")
     plt.grid(True, alpha=0.3)
