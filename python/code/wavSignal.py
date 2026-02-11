@@ -96,7 +96,7 @@ class WavSignal:
 
         # --- signal_guitar temporel ---
         self.partial_plot()
-        plt.title(f"Raw {self.get_name()}")
+        # plt.title(f"Raw {self.get_name()}")
 
         if show:
             plt.show()

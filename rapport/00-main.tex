@@ -15,7 +15,7 @@
 \usepackage{enumitem}
 \usepackage{siunitx}
 \usepackage{hyperref}
-% \usepackage{times}
+\usepackage{times}
 \usepackage[toc,page]{appendix}
 
 % Guide etudiant requires custom header/footer for some reason
@@ -52,8 +52,8 @@
 }
 \pagestyle{fancy}
 \fancyhf{} % clear default header/footer
-\fancyhead[L]{\title}
-\fancyhead[R]{\authors}
+\fancyhead[L]{\footnotesize \title}
+\fancyhead[R]{\footnotesize Benjamin Chaussé, Shawn Couture}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt} % optional
 \renewcommand{\footrulewidth}{0pt}
@@ -72,12 +72,20 @@ filtres numériques.
 \input{01-analysis.tex}
 \input{01-synthesis.tex}
 
-\newpage
 \section{Débruitage et restauration du signal}
 \input{02-denoise.tex}
 
-\section{Résultats et discussion}
-\input{03-results.tex}
+\section{Conclusion}
+
+La synthèse et le débruitage réalisés dans ce rapport montrent que les signaux
+audio peuvent être reconstruits et assainis avec précision en utilisant des
+méthodes numériques adaptées. L’extraction des paramètres et harmoniques a
+permis de reproduire fidèlement les sons de guitare. Le filtrage coupe-bande a
+efficacement réduit la sinusoïde parasite du basson tout en préservant
+l’intégrité du signal original. Ces techniques illustrent l’efficacité des
+traitements numériques pour l’analyse et la manipulation sonore dans des
+contextes homme-machine. L’approche proposée fournit une base solide pour des
+applications audio modulables et contrôlées.
 
 \newpage
 \appendix
