@@ -1,4 +1,7 @@
-from code.filters import best_sliding_average_low_pass_coefficient
+from code.filters import (
+    best_sliding_average_low_pass_coefficient,
+    sliding_average_low_pass_frequency_response,
+)
 from code.music import (
     AMONG_US,
     BETHOVEN,
@@ -53,6 +56,7 @@ def get_guitar_enveloppe():
 
     best_N = best_sliding_average_low_pass_coefficient(-3, 10, 1, 1000)
     apply_sliding_average_low_pass_filter(guitar, best_N, "guitar_enveloppe")
+    plot_filter_frequency_response(best_N)
     return guitar
 
 
@@ -72,6 +76,26 @@ def get_synthesized_guitar(harmonics_index, harmonics_peaks, enveloppe):
     print("saving synthesized signal audio")
     synthesized.save()
     return synthesized
+
+
+def plot_filter_frequency_response(coefficient_count):
+    frequencies, responses = sliding_average_low_pass_frequency_response(
+        coefficient_count, (get_guitar().get_sampling_rate())
+    )
+    at3dB = ((numpy.pi / 1000) * get_guitar().get_sampling_rate()) / (2 * numpy.pi)
+    plt.figure()
+    plt.title("Réponse en fréquence du filtre RIF")
+    plt.plot(frequencies, responses, label="réponse")
+    plt.grid(True)
+    plt.xlim(0, 900)
+    # plt.ylim(-6, 0.2)
+    plt.scatter(at3dB, -3, color="red", zorder=5, label="Fréquence de coupure, -3dB")
+    plt.axhline(-3, color="red", linestyle="--", linewidth=0.8)
+    plt.xlabel("Fréquence (Hz)")
+    plt.ylabel("Amplitude (dB)")
+    plt.legend()
+    save_plot("reponse_RIF")
+    plt.close()
 
 
 def generate_guitar_music(

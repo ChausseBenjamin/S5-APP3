@@ -9,6 +9,15 @@ def normalized_frequency():
     return numpy.pi / 1000
 
 
+def normalized_to_hertz(normalized, sampling_rate):
+    sampling_frequency = 1 / sampling_rate
+    return (normalized * sampling_frequency) / (2 * numpy.pi)
+
+
+def hertz_to_normalized(hertz, sampling_rate):
+    return (2 * numpy.pi * hertz) / (1 / sampling_rate)
+
+
 def best_sliding_average_low_pass_coefficient(
     wanted_gain_dB: int,
     max_tries: int = 1000,
@@ -82,7 +91,7 @@ def sliding_average_low_pass_response(
 
     Formula is the following:
     $$
-    H=\\frac{1}{N}\\sum^{N-1}_{n=0}e^{-j\\pi\\bar\\omega}
+    H=\\frac{1}{N}\\sum^{N-1}_{n=0}e^{-j\\bar\\omega}
     $$
     """
     all_N = numpy.arange(coefficient_count)
@@ -90,3 +99,25 @@ def sliding_average_low_pass_response(
 
     gain = average * numpy.sum(numpy.exp(-1j * normalized_frequency * all_N))
     return numpy.abs(gain)
+
+
+def sliding_average_low_pass_frequency_response(coefficient_count: int, fe):
+    filter_order = int(coefficient_count)
+    # h = numpy.ones(filter_order)
+    # reponse_impuls = (1 / (filter_order)) * h
+    Fc = numpy.pi / 1000 * fe / (2 * numpy.pi)
+    K = (Fc * 2 * filter_order / fe) + 1
+    n = numpy.linspace(
+        -(filter_order - 1) / 2, (filter_order - 1) / 2 + 1, filter_order
+    )
+    num = numpy.sin(numpy.pi * n * K / filter_order)
+    denum = numpy.sin(numpy.pi * n / filter_order)
+    reponse_impuls = (1 / filter_order) * (num / denum)
+
+    fft = numpy.fft.rfft(reponse_impuls)
+    amplitudes = numpy.abs(fft)
+
+    impuls_db = 20 * numpy.log10(amplitudes)
+    freq = numpy.fft.rfftfreq(filter_order, 1 / fe)
+
+    return freq, impuls_db
