@@ -1,0 +1,97 @@
+
+Cette section présente la restauration du signal corrompu du basson. L’objectif
+est d’éliminer une sinusoïde parasite à \SI{1}{\kilo\hertz} tout en préservant
+les caractéristiques essentielles du signal original. La méthode choisie
+consiste à appliquer un filtrage numérique très localisé afin de supprimer la
+composante indésirable sans altérer (ou presque) le reste des fréquences du
+signal.
+
+Pour atteindre cet objectif, un filtre RIF passe-bas est d’abord conçu par la
+méthode de la fenêtre, puis transformé en filtre coupe-bande centré sur la
+fréquence parasite. Le filtre initial est défini avec un ordre $N=6000$ et une
+bande de coupure de ±\SI{40}{\hertz}, ce qui permet de couvrir l’incertitude sur
+la fréquence exacte de la sinusoïde. Les équations suivantes résument la
+conception du filtre et sa conversion en filtre coupe-bande, qui sera ensuite
+convolué avec le signal d’origine pour restaurer le basson.
+
+\begin{equation}
+k = \frac{2 \cdot f_c \cdot N}{f_s} + 1
+  = \frac{2 \cdot \SI{40}{\hertz} \cdot 6000}{\SI{44100}{\hertz}} + 1
+  = \frac{480000}{44100} + 1
+  \approx 10.88 + 1 = 11.88
+\end{equation}
+
+L'équation du passe-bas de départ devient alors:
+
+\begin{equation}
+	h_{lp}[n] = \frac{1}{N}\cdot \frac{ \sin{(n\pi k/N)} }{ \sin{(n\pi/N)} }
+	          = 6000^{-1} \frac{ \sin{(n\pi \cdot 11.88/6000)} }{ \sin{(n\pi/6000)} }
+\end{equation}
+
+Toutefois, le but ultime est de couper toutes les fréquence à $f =
+\SI{1}{\kilo\hertz}$. Il faut donc trouver le décalage requis en terme de
+trames/bins requis ($\omega_0$) pour que le filtre affecte la fréquence voulue
+$f$:
+
+\begin{equation}
+	\omega_0 = 2\pi\frac{f}{f_s}
+					 = 2\pi\frac{\SI{1000}{\hertz}}{\SI{44100}{\hertz}}
+					 = \frac{2000\pi}{44100}
+					 \approx 0.1425
+\end{equation}
+
+Le passe-bas peut ensuite être transformé en coupe-bande (dont la réponse
+impulsionelle peut être observée à la figure \ref{fig:bassoon-notch}) comme suit en utilisant
+des tables de conversion précédemment fournies:
+
+\begin{align}
+	h_{bs}[n] &= \delta[n]-2h_{lp}[n]\cos{(\omega_0n)} \\
+	          &= \delta[n]-2 * 6000^{-1}
+						   \frac{
+							   \sin{(n\pi \cdot 11.88/6000)} }{
+								 \sin{(n\pi/6000)}
+							 } \cos{(\omega_0n)} \\
+	          &= \delta[n]-2 * 6000^{-1}
+						   \frac{
+							   \sin{(n\pi \cdot 11.88/6000)} }{
+								 \sin{(n\pi/6000)}
+							 } \cos{(\frac{2000n\pi}{44100})}
+\end{align}
+
+Ce coupe-bande est enfin convolué avec le signal d'origine pour générer une
+version assainie du signal. Le fonctionnement du filtre peut être confirmé en
+comparant la figure \ref{fig:bassoon-cleaned} à la figure \ref{fig:bassoon-raw}.
+Un mur de son constant, observable à la sous-figure \ref{fig:bassoon-raw-sig},
+disparaît dans \ref{fig:bassoon-cleaned-sig} (à l'exception de la période
+transitoire de début et de fin). De plus, les pics spectraux à
+$\pm\SI{1}{\kilo\hertz}$ (le $\pm$ dénote que la figure contient les fréquences
+négatives pour conserver la symétrie), causés par la sinusoïde parasite en
+\ref{fig:bassoon-raw-freq}, disparaissent complètement, comme le montre la
+sous-figure \ref{fig:bassoon-cleaned-freq}.
+
+La réponse impulsionnelle h[n] du filtre coupe-bande résultant peut être
+observée à la figure \ref{fig:bassoon-notch-impulse}, qui illustre la forme
+caractéristique de ce type de filtre avec un pic central entouré d'oscillations
+amorties.
+
+L'efficacité du filtre peut être vérifiée en observant sa réponse à une
+sinusoïde pure de \SI{1000}{\hertz} (figure \ref{fig:bassoon-test-with-1k}).
+Cette expérience montre que le signal sinusoïdal est effectivement supprimé
+par le filtre coupe-bande, confirmant son bon fonctionnement à la fréquence
+cible.
+
+
+Une fois le code rédigé dans \textit{Python} et ce nouveau signal créé, il
+devient évident aux membres de l'équipe que le filtre conçu n'arrive pas à
+éliminer la fréquence parasite dans sa totalité. Bien que le guide étudiant
+ait suggéré la réexécution du filtre plusieurs fois pour en amplifier ses
+effets, quelques expériences sont faites pour tenter de minimiser la
+corruption du signal du basson. Cette expérimentation mène à la réalisation
+que bien qu'une fréquence de coupure de $\pm\SI{40}{\hertz}$ soit exigée,
+rétrécir la plage de coupure à $\pm\SI{1}{\hertz}$ et n'appliquer le filtre
+qu'une seule fois a une incidence bien moindre sur l'intégrité du signal.
+Bien que cette expérience soit de nature subjective, elle peut être expliquée
+par le fait qu'un filtre plus large laisse passer une plus grande part de
+l'énergie de la fréquence indésirable. Cependant, pour respecter les exigences
+du laboratoire, les résultats présentés utilisent la spécification originale
+de $\pm\SI{40}{\hertz}$ avec un seul passage du filtre.

@@ -1,0 +1,34 @@
+\subsection{Analyse du signal}
+
+\subsubsection{Méthode d'extraction}
+La première chose à faire avec le signal d'origine est d'en extraire les paramètres audio.
+En effet, pour synthétisé le signal, les paramètres du signal d'origine sont nécessaire.
+Ces paramètres sont le spectre fréquentielle (amplitude de chaque fréquence), phase de
+chaque fréquence et l'enveloppe temporelle du signal.
+
+Les amplitudes et phases sont obtenue à l'aide d'une analyze Fourier (FFT) sur le signal
+d'origine, en quelques fonctions python. L'enveloppe temporelle du signal est obtenue en
+convoluant un filtre passe-bas à moyenne mobile, de type RIF, avec l'absolue du signal 
+d'origine.
+
+Ce filtre est nécessaire car l'enveloppe temporelle représente une fonction de l'amplitude
+à travers le temps et non une oscillation. Mettre le signal en valeur absolue permet d'avoir
+une moyenne qui n'est pas 0. De plus ceci créé quasiment une enveloppe tel quel. L'oscillation 
+est proche d'une enveloppe temporelle, mais il reste des composantes à haute fréqunces.
+Le filtre passe-bas permet donc d'enlevé ces hautes fréquences et faire une moyenne sur 
+des amplitudes et donc obtenir un graphique lisse sans fréquences risiduelle.
+Le filtre à moyenne mobile est choisi car il est linéaire et causale, donc n'introduit pas de
+déformations. La fréquence de coupure est choisi à $\pi/1000$ dû à la variation très lente du
+signal d'origine. L'ordre N du filtre est expliqué dans sa propre section.
+
+\subsubsection{Filtre RIF}
+La réponse impulsionnelle d'un filtre RIF à moyenne mobile à une fréquence normalizé est comme suit:
+$$
+H=\frac{1}{N}\sum^{N-1}_{n=0}e^{-j\pi\bar\omega}
+$$
+Il est possible d'utilisé la série géométrique pour enlever la somme, mais Python permet déjà le calcul
+tel quelle. Hors, la fréquence à utilisé est $\pi/1000$. Hors, suffi de tester tout les ordres possibles
+pour obtenir l'ordre le plus près d'un gain de -3dB pour la fréquence. Ce test à été fait en utilisant un
+ordre entre un minimum et un maximum. Si le gain est trop bas, un nouveau minimum est choisi, vise versa,
+jusqu'a ce que la différence entre l'ordre maximum et l'ordre minimum soit plus bas ou égal à 1. L'ordre
+N choisi de cette façon est $885$.

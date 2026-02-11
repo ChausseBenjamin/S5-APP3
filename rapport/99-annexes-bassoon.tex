@@ -1,0 +1,83 @@
+\section{Traitement du basson}
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-raw-sig.pdf}
+		\caption{Représentation temporelle}
+		\label{fig:bassoon-raw-sig}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-raw-freq.pdf}
+		\caption{Représentation fréquencielle}
+		\label{fig:bassoon-raw-freq}
+	\end{subfigure}
+
+	\caption{Analyse du basson d'origine non-traité}
+	\label{fig:bassoon-raw}
+\end{figure}
+
+\vfill
+
+\begin{figure}[H]
+  \centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-cleaned-sig.pdf}
+		\caption{Représentation temporelle}
+		\label{fig:bassoon-cleaned-sig}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-cleaned-freq.pdf}
+		\caption{Représentation fréquencielle}
+		\label{fig:bassoon-cleaned-freq}
+	\end{subfigure}
+
+	\caption{Analyse du basson assaini}
+	\label{fig:bassoon-cleaned}
+\end{figure}
+
+\vfill
+
+\begin{figure}
+\centering
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-notch-freq.pdf}
+		\caption{Amplitude (dB)}
+		\label{fig:bassoon-notch-freq}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-notch-phase.pdf}
+		\caption{Phase (rad)}
+		\label{fig:bassoon-notch-phase}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=.85\textwidth]{figures/bassoon-notch-sig.pdf}
+		\caption{Réponse impulsionnelle h[n]}
+		\label{fig:bassoon-notch-impulse}
+	\end{subfigure}
+
+	\caption{Réponse du filtre coupe-bande}
+	\label{fig:bassoon-notch}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\linewidth]{figures/bassoon-test-with-1k.pdf}
+	\caption{Réponse d'une sinusoïde \SI{1}{\kilo\hertz} au coupe-bande}
+	\label{fig:bassoon-test-with-1k}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\linewidth]{figures/bassoon-envelope.pdf}
+	\caption{Enveloppe temporelle du basson}
+	\label{fig:bassoon-envelope}
+\end{figure}
+
