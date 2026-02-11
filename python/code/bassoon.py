@@ -34,7 +34,7 @@ def de_noised():
     """Remove 1kHz noise from bassoon audio using notch filter"""
     rate, samples = audio.load("bassoon")
     cleaned = samples
-    h = gen_filter(rate, cutoff=40)
+    h = gen_filter(rate, cutoff=40, target=1000)
     for _ in range(1):
         # Use 'same' mode to keep output same size as input
         cleaned = convolve(cleaned, h, mode="same")
@@ -44,7 +44,7 @@ def de_noised():
 if __name__ == "__main__":
     rate, samples = audio.load("bassoon")
     cleaned = de_noised()
-    audio.save(rate, cleaned, "bassoon-cleaned-thin.wav")
+    audio.save(rate, cleaned, "bassoon-cleaned-basic.wav")
 
     h = gen_filter(rate)
     for typ in ["freq", "sig", "phase"]:

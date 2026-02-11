@@ -20,20 +20,25 @@ def lpf(cutoff, N, rate):
     Generate a low-pass filter with a given
     cutoff frequency
     """
-    n = np.linspace(-(N - 1) / 2, (N - 1) / 2 + 1, N)
+    # Create symmetric index array centered around 0
+    n = np.arange(N) - (N - 1) / 2
     h = np.empty(N, dtype=float)
     # Isolating k in cutoff = (k-1)/2 * (rate/N)
     # from the windowed LPF filter equation
     k = (2 * cutoff * N) / rate + 1
 
+    # Find the center index (where n=0)
+    center_idx = (N - 1) // 2
+
     # Handle n=0 case separately to avoid division by zero
-    h[0] = k / N
+    h[center_idx] = k / N
 
-    # Calculate for n > 0
-    n_nonzero = n[1:]
-    h[1:] = (1 / N) * (np.sin(pi * n_nonzero * k / N) / np.sin(pi * n_nonzero / N))
+    # Calculate for all other indices
+    for i in range(N):
+        if i != center_idx:
+            h[i] = (1 / N) * (np.sin(pi * n[i] * k / N) / np.sin(pi * n[i] / N))
 
-    return np.abs(h)
+    return h
 
 
 def notch(N, cutoff, freq, rate):
@@ -45,9 +50,11 @@ def notch(N, cutoff, freq, rate):
     """
     omega_0 = 2 * pi * (freq / rate)
 
-    n = np.arange(N)
+    # Use same indexing scheme as LPF function
+    n = np.arange(N) - (N - 1) / 2
     d = np.zeros(N, dtype=float)  # Initialize with zeros
-    d[0] = 1  # Delta function at n=0
+    center_idx = (N - 1) // 2
+    d[center_idx] = 1  # Delta function at n=0 (center)
 
     lowpass = lpf(cutoff, N, rate)
     h = d - 2 * lowpass * np.cos(omega_0 * n)
