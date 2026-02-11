@@ -3,3 +3,36 @@ Pour faire la synthèse d'un son, il faut ses paramètres, qui sont obtenue à l
 Cependant, il faut aussi les harmoniques.
 
 \subsubsection{Obtenir les harmoniques}
+Les harmoniques sont visible en affichant le graphique des amplitudes des fréquences en décibel.
+Ils sont plus élevé que les autres fréquences du signal. Cependant, aller chercher directement
+les plus grands amplitudes ne fonctionne pas, il faut le faire par groupe locaux afin d'être sur
+de n'avoir que les harmoniques. Hors, python à une fonction préfaite qui permet de les obtenir et
+de mettre une distance minimum entre les maximums pour être sur d'obtenir que les harmoniques.
+En ajustant cette valeur de distance (1285) les 31 premières harmoniques ont pu être obtenue sur
+le signal de guitar. La 32e n'était pas à la bonne place, et donc à été enlevé.
+La première harmonique correspond à la fondamental du signal, qui à été utilisé lors de la synthèse.
+
+Une fonction python pour obtenir les harmoniques à partir d'un signal à été créé, et est représenté
+dans le schéma bloc.
+
+\subsubsection{Synthèse du son}
+Plusieurs méthodes sont possible. La toute première fût avec une somme de nombres imaginaires qui
+correspondait à la réponse impulsionnelle, ça fonctionnais mais c'était très lent. Le signal de
+synthèse peut être aussi créé en fesant la transformée de Fourier inverse du spectre fréquentielle
+des harmoniques pour obtenir un signal qui peut être multiplier par l'enveloppe temporelle. La
+méthode choisi est encore plus simple à comprendre programmatiquement. Un tableau de sinus est
+généré en leurs donnant le tableau de phases, fréquences et amplitudes. Ce dernier est directement
+multiplier par l'enveloppe temporelle pour avoir la bonne amplitude à travers le temps.
+Par la suite, le signal synthétisé est multiplier par un ratio afin qu'il ait la même amplitude
+maximal que le signal d'origine. Ce ration est un rapport entre l'amplitude maximal de la synthèse
+et le signal d'origine.
+
+\subsubsection{Génération des autres notes}
+La même exact méthode que la sous-section précédente est utilisé, sauf que cette fois-ci, la
+fréquence de tout les sinus est multiplier par un facteur $k$ autre que $1$. Ce facteur est
+obtenue en fesant le ratio de la fréquence fondamental du signal d'origine et la fréquence voulue,
+ce qui dicte de combien elle doit être muiltiplier afin d'obtenir la note voulue. Voici l'équation
+d'une sinus
+$$
+\text{amplitude}\cdot\sin(2\pi\cdot\text{fréquence}\cdot k+\text{phase})
+$$
