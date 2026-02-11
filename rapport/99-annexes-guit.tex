@@ -1,28 +1,17 @@
 \section{Traitement de la guitare}
 
-\todo{
-Affichage des spectres de Fourier des signaux du LA# et du basson (originaux)
-en dB avec l’axe des fréquences en Hz
-}
-
 \begin{figure}[H]
   \centering
-	\begin{subfigure}{\linewidth}
-		\centering
-		\includegraphics[width=.85\textwidth]{../python/graphs/reponse_RIF.pdf}
-		\caption{Réponse au filtre RIF}
-		\label{fig:reponse-frequentielle-rif}
-	\end{subfigure}
+	\includegraphics[width=.85\textwidth]{../python/graphs/reponse_RIF.pdf}
+	\caption{Réponse au filtre RIF}
+	\label{fig:reponse-frequentielle-rif}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-	\begin{subfigure}{\linewidth}
-		\centering
-		\includegraphics[width=.85\textwidth]{../python/graphs/31 harmonics of abs of note_guitare_lad.pdf}
-		\caption{31 premières harmoniques de la guitar}
-		\label{fig:31-premières-harmoniques}
-	\end{subfigure}
+	\includegraphics[width=.85\textwidth]{../python/graphs/31 harmonics of abs of note_guitare_lad.pdf}
+	\caption{31 premières harmoniques de la guitar}
+	\label{fig:31-premières-harmoniques}
 \end{figure}
 
 \begin{figure}[H]
@@ -46,23 +35,22 @@ en dB avec l’axe des fréquences en Hz
 \end{figure}
 
 \begin{figure}[H]
-  \centering
-	\begin{subfigure}{\linewidth}
+\centering
+	\begin{subfigure}{.49\linewidth}
 		\centering
 		\includegraphics[width=.85\textwidth]{figures/DRA-Extraction-Paramètres.pdf}
-		\caption{Schéma bloc de l'extraction des paramètres}
+		\caption{Extraction des paramètres}
 		\label{fig:extraction-paramètres}
 	\end{subfigure}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-	\begin{subfigure}{\linewidth}
+	\begin{subfigure}{.49\linewidth}
 		\centering
 		\includegraphics[width=.85\textwidth]{figures/DRA-Synthetisation-Audio.pdf}
-		\caption{Schéma bloc de la synthétisation de l'audio}
+		\caption{Synthèse de l'audio}
 		\label{fig:synthetisation-audio}
 	\end{subfigure}
+
+	\caption{Schémas bloc des processus de traitement}
+	\label{fig:dra-processus}
 \end{figure}
 
 
