@@ -7,9 +7,9 @@ Ces paramètres sont le spectre fréquentielle (amplitude de chaque fréquence),
 chaque fréquence et l'enveloppe temporelle du signal.
 
 Les amplitudes et phases sont obtenue à l'aide d'une analyze Fourier (FFT) sur le signal
-d'origine, en quelques fonctions python. L'enveloppe temporelle du signal est obtenue en
+d'origine, en quelques fonctions python. L'enveloppe temporelle du signal (\ref{fig:enveloppe-guitar}) est obtenue en
 convoluant un filtre passe-bas à moyenne mobile, de type RIF, avec l'absolue du signal 
-d'origine.
+d'origine. Schéma bloc à cette figure: (\ref{fig:extraction-paramètres})
 
 Ce filtre est nécessaire car l'enveloppe temporelle représente une fonction de l'amplitude
 à travers le temps et non une oscillation. Mettre le signal en valeur absolue permet d'avoir
@@ -27,8 +27,9 @@ $$
 H=\frac{1}{N}\sum^{N-1}_{n=0}e^{-j\pi\bar\omega}
 $$
 Il est possible d'utilisé la série géométrique pour enlever la somme, mais Python permet déjà le calcul
-tel quelle. Hors, la fréquence à utilisé est $\pi/1000$. Hors, suffi de tester tout les ordres possibles
+tel quelle. Hors, la fréquence de coupure utilisé pour la guitar est $\pi/1000$. Suffi de tester tout les ordres possibles
 pour obtenir l'ordre le plus près d'un gain de -3dB pour la fréquence. Ce test à été fait en utilisant un
 ordre entre un minimum et un maximum. Si le gain est trop bas, un nouveau minimum est choisi, vise versa,
 jusqu'a ce que la différence entre l'ordre maximum et l'ordre minimum soit plus bas ou égal à 1. L'ordre
-N choisi de cette façon est $885$.
+N choisi de cette façon est $885$. La figure \ref{fig:reponse-frequentielle-rif} montre la réponse fréquentielle
+de se filtre et la fréquence à -3dB.
